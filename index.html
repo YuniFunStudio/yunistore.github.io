@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YuniStore — Магазин игр от YuninLoL</title>
     <style>
+        /* ===== ВСЕ СТИЛИ ЗДЕСЬ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -33,8 +34,8 @@
         .bg-scroll {
             display: flex;
             flex-wrap: wrap;
-            width: 100%;
-            height: 100%;
+            width: 200%;
+            height: 200%;
             animation: scrollBg 60s ease-in-out infinite alternate;
         }
 
@@ -47,17 +48,16 @@
             image-rendering: pixelated;
         }
 
-        /* ===== АНИМАЦИЯ ДВИЖЕНИЯ ===== */
         @keyframes scrollBg {
             0% {
                 transform: translate(0, 0);
             }
             100% {
-                transform: translate(254px, 247px);
+                transform: translate(-254px, -247px);
             }
         }
 
-        /* ===== ЗАТЕМНЕНИЕ ПОВЕРХ ФОНА ===== */
+        /* ===== ЗАТЕМНЕНИЕ ===== */
         .overlay {
             position: fixed;
             top: 0;
@@ -340,37 +340,17 @@
     <!-- ===== АНИМИРОВАННЫЙ ФОН ===== -->
     <div class="bg-wrap">
         <div class="bg-scroll" id="bgScroll">
-            <!-- КЛОНИРУЕМ КАРТИНКУ 30 РАЗ, ЧТОБЫ ЗАПОЛНИТЬ ЭКРАН -->
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
-            <img src="images/bg.jpg" alt="">
+            <!-- 30 КЛОНОВ КАРТИНКИ -->
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
+            <img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt=""><img src="images/bg.jpg" alt="">
         </div>
     </div>
 
@@ -393,7 +373,7 @@
         <a href="#contact">📧 Контакты</a>
     </nav>
 
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <!-- ===== КОНТЕНТ ===== -->
     <div class="container">
 
         <div class="store-card" id="games">
@@ -472,7 +452,7 @@
         <div class="small">Магазин игр от YuninLoL — Все игры бесплатны!</div>
     </footer>
 
-    <!-- ===== ФОНОВАЯ МУЗЫКА ===== -->
+    <!-- ===== МУЗЫКА ===== -->
     <audio id="bgMusic" loop autoplay>
         <source src="audio/bg-music.mp3" type="audio/mpeg">
         Твой браузер не поддерживает аудио.
