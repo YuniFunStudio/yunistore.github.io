@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YuniStore — Магазин игр от YuninLoL</title>
+    <title>YuniStore</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-            color: #FFFFFF;
+            color: #fff;
             min-height: 100vh;
-            overflow-x: hidden;
             background: #0a0a0a;
+            overflow-x: hidden;
         }
 
-        /* ===== ФОН ВО ВСЁМ ОКНЕ ===== */
+        /* ===== ФОН ===== */
         .bg-wrap {
             position: fixed;
             top: 0;
@@ -28,7 +24,6 @@
             height: 100%;
             z-index: 0;
             overflow: hidden;
-            background: #0a0a0a;
         }
 
         .bg-scroll {
@@ -45,7 +40,6 @@
             flex-shrink: 0;
             object-fit: cover;
             opacity: 0.2;
-            image-rendering: pixelated;
         }
 
         @keyframes scrollBg {
@@ -53,7 +47,6 @@
             100% { transform: translate(-508px, -494px); }
         }
 
-        /* ===== ЗАТЕМНЕНИЕ ПОВЕРХ ФОНА ===== */
         .overlay {
             position: fixed;
             top: 0;
@@ -65,32 +58,26 @@
             pointer-events: none;
         }
 
-        /* ===== ВСЁ ОСТАЛЬНОЕ ПОВЕРХ ===== */
-        header, nav, .container, footer {
-            position: relative;
-            z-index: 2;
-        }
+        header, nav, .container, footer { position: relative; z-index: 2; }
 
         /* ===== ШАПКА ===== */
         header {
             background: linear-gradient(135deg, #0029CE, #0062CC, #009FCC);
-            padding: 30px 20px 20px 20px;
+            padding: 20px;
             text-align: center;
             border-bottom: 6px solid #4CFF00;
         }
 
         header .logo {
             width: 60%;
-            max-width: 600px;
+            max-width: 500px;
             height: auto;
-            display: block;
-            margin: 0 auto;
         }
 
         /* ===== НАВИГАЦИЯ ===== */
         nav {
             background: rgba(26, 26, 26, 0.95);
-            padding: 14px 20px;
+            padding: 12px 20px;
             text-align: center;
             border-bottom: 3px solid #0029CE;
             position: sticky;
@@ -104,16 +91,15 @@
         }
 
         nav a {
-            color: #FFFFFF;
+            color: #fff;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 10px;
             font-weight: bold;
             font-size: 16px;
             padding: 6px 12px;
             border-radius: 4px;
             border: 2px solid transparent;
             transition: all 0.3s;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         nav a:hover {
@@ -122,9 +108,8 @@
             background: rgba(76, 255, 0, 0.1);
         }
 
-        /* ===== КНОПКА ЯЗЫКА ===== */
         .lang-btn {
-            background: #000000;
+            background: #000;
             color: #4CFF00;
             border: 2px solid #4CFF00;
             border-radius: 20px;
@@ -133,22 +118,15 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-            margin-left: 10px;
         }
 
         .lang-btn:hover {
             background: #4CFF00;
-            color: #000000;
-            box-shadow: 0 0 20px rgba(76, 255, 0, 0.3);
+            color: #000;
         }
 
         /* ===== КОНТЕНТ ===== */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
         .store-card {
             background: rgba(0, 0, 0, 0.85);
@@ -164,17 +142,10 @@
             border-bottom: 3px dotted #009FCC;
             padding-bottom: 10px;
             margin-bottom: 20px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
-        .store-card p {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #DDDDDD;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
+        .store-card p { font-size: 18px; line-height: 1.8; color: #ddd; }
 
-        /* ===== ИГРЫ ===== */
         .game-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -188,7 +159,7 @@
             border-radius: 12px;
             padding: 24px 20px;
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
         }
 
         .game-item:hover {
@@ -197,51 +168,27 @@
             border-color: #4CFF00;
         }
 
-        .game-item .game-icon {
-            width: 120px;
-            height: 120px;
-            display: block;
-            margin: 0 auto 10px auto;
-        }
-
-        .game-item h3 {
-            color: #4CFF00;
-            font-size: 22px;
-            margin-bottom: 6px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
-
-        .game-item p {
-            font-size: 14px;
-            color: #BBBBBB;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
+        .game-item .game-icon { width: 120px; height: 120px; display: block; margin: 0 auto 10px auto; }
+        .game-item h3 { color: #4CFF00; font-size: 22px; margin-bottom: 6px; }
+        .game-item p { font-size: 14px; color: #bbb; }
 
         .game-item .status {
             display: inline-block;
-            background: #000000;
+            background: #000;
             padding: 4px 16px;
             border-radius: 20px;
             font-size: 12px;
             margin-top: 10px;
             font-weight: bold;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
-        .game-item .status.wip {
-            border: 2px solid #FF6600;
-            color: #FF6600;
-        }
-
-        .game-item .status.released {
-            border: 2px solid #4CFF00;
-            color: #4CFF00;
-        }
+        .game-item .status.wip { border: 2px solid #FF6600; color: #FF6600; }
+        .game-item .status.released { border: 2px solid #4CFF00; color: #4CFF00; }
 
         .btn {
             display: inline-block;
             background: linear-gradient(135deg, #0029CE, #0062CC);
-            color: #FFFFFF;
+            color: #fff;
             padding: 10px 28px;
             border-radius: 30px;
             font-size: 15px;
@@ -250,7 +197,6 @@
             text-decoration: none;
             transition: all 0.3s;
             margin-top: 12px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .btn:hover {
@@ -259,12 +205,8 @@
             border-color: #00FF21;
         }
 
-        .btn-small {
-            padding: 6px 18px;
-            font-size: 13px;
-        }
+        .btn-small { padding: 6px 18px; font-size: 13px; }
 
-        /* ===== ЛИЦЕНЗИЯ ===== */
         .license-box {
             background: rgba(0, 0, 0, 0.6);
             border: 2px solid #4CFF00;
@@ -273,17 +215,10 @@
             margin-top: 12px;
         }
 
-        .license-box p {
-            font-size: 14px;
-            color: #AAAAAA;
-            margin: 4px 0;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
-
+        .license-box p { font-size: 14px; color: #aaa; margin: 4px 0; }
         .license-box .green { color: #4CFF00; }
         .license-box .red { color: #FF4444; }
 
-        /* ===== ДИЗЕРИНГ ===== */
         .dither {
             width: 100%;
             height: 8px;
@@ -302,7 +237,6 @@
             border-radius: 4px;
         }
 
-        /* ===== ПОДВАЛ ===== */
         footer {
             background: rgba(0, 0, 0, 0.95);
             text-align: center;
@@ -311,41 +245,12 @@
             margin-top: 20px;
         }
 
-        footer p {
-            color: #4CFF00;
-            font-size: 16px;
-            letter-spacing: 3px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
+        footer p { color: #4CFF00; font-size: 16px; letter-spacing: 3px; }
+        footer .small { color: #404040; font-size: 12px; margin-top: 6px; }
+        .footer-links a { color: #4CFF00; text-decoration: none; margin: 0 12px; font-size: 14px; }
+        .footer-links a:hover { color: #fff; }
 
-        footer .small {
-            color: #404040;
-            font-size: 12px;
-            margin-top: 6px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
-
-        .footer-links a {
-            color: #4CFF00;
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 14px;
-            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-        }
-
-        .footer-links a:hover {
-            color: #FFFFFF;
-        }
-
-        @media (max-width: 600px) {
-            header .logo { width: 80%; }
-            nav a { margin: 0 8px; font-size: 13px; }
-            .game-grid { grid-template-columns: 1fr; }
-            .game-item .game-icon { width: 80px; height: 80px; }
-            .lang-btn { font-size: 12px; padding: 2px 12px; }
-        }
-
-        /* ===== СКРЫТЫЕ ЭЛЕМЕНТЫ ДЛЯ РУССКОГО ===== */
+        /* ===== ЯЗЫКИ ===== */
         .ru { display: none; }
         .en { display: inline; }
 
@@ -353,6 +258,14 @@
         body.lang-ru .en { display: none; }
         body.lang-en .ru { display: none; }
         body.lang-en .en { display: inline; }
+
+        @media (max-width: 600px) {
+            header .logo { width: 80%; }
+            nav a { margin: 0 6px; font-size: 13px; }
+            .game-grid { grid-template-columns: 1fr; }
+            .game-item .game-icon { width: 80px; height: 80px; }
+            .lang-btn { font-size: 12px; padding: 2px 12px; }
+        }
     </style>
 </head>
 <body>
@@ -394,10 +307,9 @@
     <!-- ===== КОНТЕНТ ===== -->
     <div class="container">
 
-        <!-- ===== ИГРЫ ===== -->
         <div class="store-card" id="games">
             <h2><span class="en">🎮 — GAME STORE —</span><span class="ru">🎮 — МАГАЗИН ИГР —</span></h2>
-            <p style="font-size: 16px; color: #AAAAAA; margin-bottom: 16px;">
+            <p style="font-size: 16px; color: #aaa; margin-bottom: 16px;">
                 <span class="en">All games are free. Just download and play! 🎉</span>
                 <span class="ru">Все игры бесплатны. Просто скачивай и играй! 🎉</span>
             </p>
@@ -424,13 +336,10 @@
             </div>
         </div>
 
-        <!-- ===== ОБ АВТОРЕ ===== -->
         <div class="store-card" id="about">
             <h2><span class="en">📌 — ABOUT THE AUTHOR —</span><span class="ru">📌 — ОБ АВТОРЕ —</span></h2>
-            <p>
-                <strong style="color: #4CFF00; font-size: 22px;">YuninLoL</strong>
-            </p>
-            <p style="font-size: 16px; color: #BBBBBB;">
+            <p><strong style="color: #4CFF00; font-size: 22px;">YuninLoL</strong></p>
+            <p style="font-size: 16px; color: #bbb;">
                 <span class="en">Game Creator · Modder · Gamer</span>
                 <span class="ru">Создатель игр · Моддер · Геймер</span>
             </p>
@@ -440,7 +349,6 @@
             </p>
         </div>
 
-        <!-- ===== ЛИЦЕНЗИЯ ===== -->
         <div class="store-card" id="license" style="border-color: #4CFF00;">
             <h2><span class="en">⚖️ — LICENSE —</span><span class="ru">⚖️ — ЛИЦЕНЗИЯ —</span></h2>
             <p style="font-size: 16px;">
@@ -455,7 +363,6 @@
             </div>
         </div>
 
-        <!-- ===== КОНТАКТЫ ===== -->
         <div class="store-card" id="contact" style="border-color: #009FCC;">
             <h2><span class="en">📧 — CONTACTS —</span><span class="ru">📧 — КОНТАКТЫ —</span></h2>
             <p>📺 <strong>YouTube:</strong> <a href="#" style="color: #4CFF00;">@YuniFunStudio</a></p>
@@ -467,7 +374,6 @@
 
     </div>
 
-    <!-- ===== ПОДВАЛ ===== -->
     <footer>
         <p>⊹ ࣪ ˖ YUNISTORE ˖ ࣪ ⊹</p>
         <div class="footer-links">
@@ -479,18 +385,14 @@
         <div class="small"><span class="en">Game store by YuninLoL — All games are free!</span><span class="ru">Магазин игр от YuninLoL — Все игры бесплатны!</span></div>
     </footer>
 
-    <!-- ===== МУЗЫКА ===== -->
     <audio id="bgMusic" loop autoplay>
         <source src="./audio/bg-music.mp3" type="audio/mpeg">
-        <span class="en">Your browser does not support audio.</span>
-        <span class="ru">Твой браузер не поддерживает аудио.</span>
     </audio>
 
     <script>
         const music = document.getElementById('bgMusic');
         music.volume = 0.3;
 
-        // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА =====
         const langToggle = document.getElementById('langToggle');
         let currentLang = 'en';
 
@@ -508,7 +410,6 @@
             }
         });
 
-        // По умолчанию английский
         document.body.classList.add('lang-en');
     </script>
 
