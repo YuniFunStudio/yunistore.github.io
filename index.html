@@ -12,13 +12,14 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
             color: #FFFFFF;
             min-height: 100vh;
             overflow-x: hidden;
+            background: #0a0a0a;
         }
 
-        /* ===== ФОН ===== */
+        /* ===== ФОН ВО ВСЁМ ОКНЕ ===== */
         .bg-wrap {
             position: fixed;
             top: 0;
@@ -33,9 +34,9 @@
         .bg-scroll {
             display: flex;
             flex-wrap: wrap;
-            width: 200%;
-            height: 200%;
-            animation: scrollBg 60s ease-in-out infinite alternate;
+            width: 300%;
+            height: 300%;
+            animation: scrollBg 120s linear infinite;
         }
 
         .bg-scroll img {
@@ -43,15 +44,16 @@
             height: 247px;
             flex-shrink: 0;
             object-fit: cover;
-            opacity: 0.3;
+            opacity: 0.2;
             image-rendering: pixelated;
         }
 
         @keyframes scrollBg {
             0% { transform: translate(0, 0); }
-            100% { transform: translate(-254px, -247px); }
+            100% { transform: translate(-508px, -494px); }
         }
 
+        /* ===== ЗАТЕМНЕНИЕ ПОВЕРХ ФОНА ===== */
         .overlay {
             position: fixed;
             top: 0;
@@ -63,12 +65,13 @@
             pointer-events: none;
         }
 
+        /* ===== ВСЁ ОСТАЛЬНОЕ ПОВЕРХ ===== */
         header, nav, .container, footer {
             position: relative;
             z-index: 2;
         }
 
-        /* ===== ШАПКА (ТОЛЬКО ЛОГОТИП) ===== */
+        /* ===== ШАПКА ===== */
         header {
             background: linear-gradient(135deg, #0029CE, #0062CC, #009FCC);
             padding: 30px 20px 20px 20px;
@@ -93,24 +96,51 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         nav a {
             color: #FFFFFF;
             text-decoration: none;
-            margin: 0 20px;
+            margin: 0 15px;
             font-weight: bold;
             font-size: 16px;
             padding: 6px 12px;
             border-radius: 4px;
             border: 2px solid transparent;
             transition: all 0.3s;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         nav a:hover {
             color: #4CFF00;
             border-color: #4CFF00;
             background: rgba(76, 255, 0, 0.1);
+        }
+
+        /* ===== КНОПКА ЯЗЫКА ===== */
+        .lang-btn {
+            background: #000000;
+            color: #4CFF00;
+            border: 2px solid #4CFF00;
+            border-radius: 20px;
+            padding: 4px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            margin-left: 10px;
+        }
+
+        .lang-btn:hover {
+            background: #4CFF00;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(76, 255, 0, 0.3);
         }
 
         /* ===== КОНТЕНТ ===== */
@@ -134,13 +164,14 @@
             border-bottom: 3px dotted #009FCC;
             padding-bottom: 10px;
             margin-bottom: 20px;
-            font-family: 'Comic Sans MS', cursive;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .store-card p {
             font-size: 18px;
             line-height: 1.8;
             color: #DDDDDD;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         /* ===== ИГРЫ ===== */
@@ -177,11 +208,13 @@
             color: #4CFF00;
             font-size: 22px;
             margin-bottom: 6px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .game-item p {
             font-size: 14px;
             color: #BBBBBB;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .game-item .status {
@@ -192,6 +225,7 @@
             font-size: 12px;
             margin-top: 10px;
             font-weight: bold;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .game-item .status.wip {
@@ -216,6 +250,7 @@
             text-decoration: none;
             transition: all 0.3s;
             margin-top: 12px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .btn:hover {
@@ -242,6 +277,7 @@
             font-size: 14px;
             color: #AAAAAA;
             margin: 4px 0;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .license-box .green { color: #4CFF00; }
@@ -277,15 +313,16 @@
 
         footer p {
             color: #4CFF00;
-            font-family: 'Courier New', monospace;
             font-size: 16px;
             letter-spacing: 3px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         footer .small {
             color: #404040;
             font-size: 12px;
             margin-top: 6px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .footer-links a {
@@ -293,6 +330,7 @@
             text-decoration: none;
             margin: 0 12px;
             font-size: 14px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
         }
 
         .footer-links a:hover {
@@ -301,10 +339,20 @@
 
         @media (max-width: 600px) {
             header .logo { width: 80%; }
-            nav a { margin: 0 10px; font-size: 14px; }
+            nav a { margin: 0 8px; font-size: 13px; }
             .game-grid { grid-template-columns: 1fr; }
             .game-item .game-icon { width: 80px; height: 80px; }
+            .lang-btn { font-size: 12px; padding: 2px 12px; }
         }
+
+        /* ===== СКРЫТЫЕ ЭЛЕМЕНТЫ ДЛЯ РУССКОГО ===== */
+        .ru { display: none; }
+        .en { display: inline; }
+
+        body.lang-ru .ru { display: inline; }
+        body.lang-ru .en { display: none; }
+        body.lang-en .ru { display: none; }
+        body.lang-en .en { display: inline; }
     </style>
 </head>
 <body>
@@ -312,6 +360,8 @@
     <!-- ===== ФОН ===== -->
     <div class="bg-wrap">
         <div class="bg-scroll">
+            <img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt="">
+            <img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt="">
             <img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt="">
             <img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt="">
             <img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt=""><img src="./images/bg.jpg" alt="">
@@ -334,70 +384,80 @@
 
     <!-- ===== НАВИГАЦИЯ ===== -->
     <nav>
-        <a href="#games">🎮 Игры</a>
-        <a href="#about">📌 Об авторе</a>
-        <a href="#license">⚖️ Лицензия</a>
-        <a href="#contact">📧 Контакты</a>
+        <a href="#games"><span class="en">🎮 Games</span><span class="ru">🎮 Игры</span></a>
+        <a href="#about"><span class="en">📌 About</span><span class="ru">📌 Об авторе</span></a>
+        <a href="#license"><span class="en">⚖️ License</span><span class="ru">⚖️ Лицензия</span></a>
+        <a href="#contact"><span class="en">📧 Contacts</span><span class="ru">📧 Контакты</span></a>
+        <button class="lang-btn" id="langToggle">RU / EN</button>
     </nav>
 
     <!-- ===== КОНТЕНТ ===== -->
     <div class="container">
 
+        <!-- ===== ИГРЫ ===== -->
         <div class="store-card" id="games">
-            <h2>🎮 — МАГАЗИН ИГР —</h2>
+            <h2><span class="en">🎮 — GAME STORE —</span><span class="ru">🎮 — МАГАЗИН ИГР —</span></h2>
             <p style="font-size: 16px; color: #AAAAAA; margin-bottom: 16px;">
-                Все игры бесплатны. Просто скачивай и играй! 🎉
+                <span class="en">All games are free. Just download and play! 🎉</span>
+                <span class="ru">Все игры бесплатны. Просто скачивай и играй! 🎉</span>
             </p>
             <div class="game-grid">
 
                 <div class="game-item">
                     <img src="./images/universe-icon.png" alt="Universe Yunin" class="game-icon">
                     <h3>Universe Yunin</h3>
-                    <p>Новая вселенная, новый герой, загадочная школа.</p>
-                    <span class="status wip">🛠️ В разработке</span>
+                    <p><span class="en">New universe, new hero, mysterious school.</span><span class="ru">Новая вселенная, новый герой, загадочная школа.</span></p>
+                    <span class="status wip"><span class="en">🛠️ In development</span><span class="ru">🛠️ В разработке</span></span>
                     <br>
-                    <a href="#" class="btn btn-small">Подробнее</a>
+                    <a href="#" class="btn btn-small"><span class="en">More</span><span class="ru">Подробнее</span></a>
                 </div>
 
                 <div class="game-item">
                     <img src="./images/legacy-icon.png" alt="Yunin School Legacy" class="game-icon">
                     <h3>Yunin School Legacy</h3>
-                    <p>Классическая игра в стиле Baldi's Basics.</p>
-                    <span class="status released">✅ Вышла</span>
+                    <p><span class="en">Classic game in Baldi's Basics style.</span><span class="ru">Классическая игра в стиле Baldi's Basics.</span></p>
+                    <span class="status released"><span class="en">✅ Released</span><span class="ru">✅ Вышла</span></span>
                     <br>
-                    <a href="#" class="btn btn-small">Скачать</a>
+                    <a href="#" class="btn btn-small"><span class="en">Download</span><span class="ru">Скачать</span></a>
                 </div>
 
             </div>
         </div>
 
+        <!-- ===== ОБ АВТОРЕ ===== -->
         <div class="store-card" id="about">
-            <h2>📌 — ОБ АВТОРЕ —</h2>
+            <h2><span class="en">📌 — ABOUT THE AUTHOR —</span><span class="ru">📌 — ОБ АВТОРЕ —</span></h2>
             <p>
                 <strong style="color: #4CFF00; font-size: 22px;">YuninLoL</strong>
             </p>
             <p style="font-size: 16px; color: #BBBBBB;">
-                Создатель игр · Моддер · Геймер
+                <span class="en">Game Creator · Modder · Gamer</span>
+                <span class="ru">Создатель игр · Моддер · Геймер</span>
             </p>
             <p style="margin-top: 12px;">
-                💬 Мне 13 лет, я делаю игры в Unity и GameMaker.
+                <span class="en">💬 I'm 13 years old, I make games in Unity and GameMaker.</span>
+                <span class="ru">💬 Мне 13 лет, я делаю игры в Unity и GameMaker.</span>
             </p>
         </div>
 
+        <!-- ===== ЛИЦЕНЗИЯ ===== -->
         <div class="store-card" id="license" style="border-color: #4CFF00;">
-            <h2>⚖️ — ЛИЦЕНЗИЯ —</h2>
+            <h2><span class="en">⚖️ — LICENSE —</span><span class="ru">⚖️ — ЛИЦЕНЗИЯ —</span></h2>
             <p style="font-size: 16px;">
-                Все игры защищены лицензией <strong style="color: #4CFF00;">CC BY-NC-ND 4.0</strong>.
+                <span class="en">All games are protected by license</span>
+                <span class="ru">Все игры защищены лицензией</span>
+                <strong style="color: #4CFF00;">CC BY-NC-ND 4.0</strong>.
             </p>
             <div class="license-box">
-                <p><span class="green">✅</span> Бесплатно скачивать и играть</p>
-                <p><span class="green">✅</span> Стримить и записывать видео</p>
-                <p><span class="red">❌</span> Продавать или изменять игру</p>
+                <p><span class="green">✅</span> <span class="en">Free download and play</span><span class="ru">Бесплатно скачивать и играть</span></p>
+                <p><span class="green">✅</span> <span class="en">Stream and record videos</span><span class="ru">Стримить и записывать видео</span></p>
+                <p><span class="red">❌</span> <span class="en">Sell or modify the game</span><span class="ru">Продавать или изменять игру</span></p>
             </div>
         </div>
 
+        <!-- ===== КОНТАКТЫ ===== -->
         <div class="store-card" id="contact" style="border-color: #009FCC;">
-            <h2>📧 — КОНТАКТЫ —</h2>
+            <h2><span class="en">📧 — CONTACTS —</span><span class="ru">📧 — КОНТАКТЫ —</span></h2>
             <p>📺 <strong>YouTube:</strong> <a href="#" style="color: #4CFF00;">@YuniFunStudio</a></p>
             <p>🍌 <strong>GameBanana:</strong> <a href="#" style="color: #4CFF00;">YuninLoL</a></p>
             <p>🐙 <strong>GitHub:</strong> <a href="#" style="color: #4CFF00;">YuninLoL</a></p>
@@ -411,23 +471,45 @@
     <footer>
         <p>⊹ ࣪ ˖ YUNISTORE ˖ ࣪ ⊹</p>
         <div class="footer-links">
-            <a href="#games">Игры</a>
-            <a href="#about">Об авторе</a>
-            <a href="#license">Лицензия</a>
-            <a href="#contact">Контакты</a>
+            <a href="#games"><span class="en">Games</span><span class="ru">Игры</span></a>
+            <a href="#about"><span class="en">About</span><span class="ru">Об авторе</span></a>
+            <a href="#license"><span class="en">License</span><span class="ru">Лицензия</span></a>
+            <a href="#contact"><span class="en">Contacts</span><span class="ru">Контакты</span></a>
         </div>
-        <div class="small">Магазин игр от YuninLoL — Все игры бесплатны!</div>
+        <div class="small"><span class="en">Game store by YuninLoL — All games are free!</span><span class="ru">Магазин игр от YuninLoL — Все игры бесплатны!</span></div>
     </footer>
 
     <!-- ===== МУЗЫКА ===== -->
     <audio id="bgMusic" loop autoplay>
         <source src="./audio/bg-music.mp3" type="audio/mpeg">
-        Твой браузер не поддерживает аудио.
+        <span class="en">Your browser does not support audio.</span>
+        <span class="ru">Твой браузер не поддерживает аудио.</span>
     </audio>
 
     <script>
         const music = document.getElementById('bgMusic');
         music.volume = 0.3;
+
+        // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА =====
+        const langToggle = document.getElementById('langToggle');
+        let currentLang = 'en';
+
+        langToggle.addEventListener('click', function() {
+            if (currentLang === 'en') {
+                document.body.classList.remove('lang-en');
+                document.body.classList.add('lang-ru');
+                currentLang = 'ru';
+                langToggle.textContent = 'EN / RU';
+            } else {
+                document.body.classList.remove('lang-ru');
+                document.body.classList.add('lang-en');
+                currentLang = 'en';
+                langToggle.textContent = 'RU / EN';
+            }
+        });
+
+        // По умолчанию английский
+        document.body.classList.add('lang-en');
     </script>
 
 </body>
