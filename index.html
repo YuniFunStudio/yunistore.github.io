@@ -6,7 +6,6 @@
     <title>YuniStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style id="main-style">
-        /* ===== БАЗОВЫЙ СТИЛЬ (будет заменяться шаблонами) ===== */
         :root {
             --bg-primary: #0d0d0d;
             --bg-secondary: #1a1a2e;
@@ -25,7 +24,6 @@
             --particles-opacity: 0.03;
             --animation-speed: 1s;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font);
@@ -35,8 +33,6 @@
             overflow-x: hidden;
             transition: background 0.3s, color 0.3s;
         }
-
-        /* ===== ФОН (ОПТИМИЗИРОВАН) ===== */
         .bg-wrap {
             position: fixed;
             top: 0;
@@ -85,7 +81,6 @@
         }
         header, nav, .container, footer { position: relative; z-index: 2; }
 
-        /* ===== ШАПКА ===== */
         header {
             background: linear-gradient(135deg, var(--bg-secondary), #16213e, var(--border-color));
             padding: 20px 12px 14px 12px;
@@ -119,7 +114,6 @@
             100% { transform: translateY(0px); }
         }
 
-        /* ===== НАВИГАЦИЯ ===== */
         nav {
             background: rgba(22, 33, 62, 0.95);
             padding: 10px 8px;
@@ -172,7 +166,6 @@
         .tab-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(74, 158, 255, 0.12); box-shadow: 0 0 25px rgba(74, 158, 255, 0.08); }
         .tab-btn .icon { font-size: 18px; }
 
-        /* ===== КОНТЕНТ ===== */
         .container { max-width: 1100px; margin: 0 auto; padding: 20px 12px; }
         .tab-content { display: none; animation: fadeIn 0.35s ease; }
         .tab-content.active { display: block; }
@@ -181,7 +174,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== ПАНЕЛИ ===== */
         .panel {
             background: var(--bg-panel);
             border: 2px solid var(--border-color);
@@ -230,7 +222,6 @@
         }
         .panel p { font-size: 16px; line-height: 1.6; color: var(--text-secondary); }
 
-        /* ===== НОВОСТИ ===== */
         .news-item {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -290,7 +281,6 @@
         .news-item .photo { margin: 10px 0; text-align: center; }
         .news-item .photo img { max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid var(--card-border); }
 
-        /* ===== ИГРЫ ===== */
         .game-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -344,7 +334,6 @@
         .btn:active { background: var(--accent); color: #0d0d0d; }
         .btn-small { padding: 5px 14px; font-size: 12px; }
 
-        /* ===== НАСТРОЙКИ ===== */
         .settings-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -380,7 +369,6 @@
         .settings-item input[type="range"] { height: 5px; padding: 0; }
         .settings-item .value { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
-        /* ===== КРЕДИТЫ ===== */
         .credit-item {
             display: flex;
             align-items: center;
@@ -398,7 +386,6 @@
         .credit-item a:hover { color: var(--accent2); text-decoration: underline; }
         .credit-item a:active { color: var(--accent2); }
 
-        /* ===== АДМИН ===== */
         .admin-login { text-align: center; padding: 20px; }
         .admin-login input {
             background: var(--bg-secondary);
@@ -512,7 +499,6 @@
         .drop-zone.dragover { border-color: var(--accent2); background: rgba(74, 158, 255, 0.05); }
         .drop-zone input[type="file"] { display: none; }
 
-        /* ===== ПОДВАЛ ===== */
         .dither {
             width: 100%;
             height: 6px;
@@ -545,7 +531,6 @@
         footer p { color: var(--accent); font-size: 15px; letter-spacing: 2px; font-family: inherit; }
         footer .small { color: #444; font-size: 11px; margin-top: 4px; }
 
-        /* ===== ЯЗЫКИ ===== */
         .ru { display: none; }
         .en { display: inline; }
         body.lang-ru .ru { display: inline; }
@@ -553,7 +538,6 @@
         body.lang-en .ru { display: none; }
         body.lang-en .en { display: inline; }
 
-        /* ===== УВЕДОМЛЕНИЕ ===== */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -574,7 +558,6 @@
             max-width: 90%;
         }
 
-        /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
             header .logo { width: 70%; }
             .tab-btn { font-size: 13px; padding: 6px 10px; }
@@ -636,16 +619,13 @@
 </head>
 <body>
 
-    <!-- ===== ФОН ===== -->
     <div class="bg-wrap" id="bgWrap"></div>
     <div class="overlay"></div>
 
-    <!-- ===== ШАПКА ===== -->
     <header>
         <img src="./images/logo.png" alt="YuniStore" class="logo" id="mainLogo">
     </header>
 
-    <!-- ===== НАВИГАЦИЯ ===== -->
     <nav>
         <button class="tab-btn active" data-tab="news"><span class="icon">📰</span> <span class="en">News</span><span class="ru">Новости</span></button>
         <button class="tab-btn" data-tab="games"><span class="icon">🎮</span> <span class="en">Games</span><span class="ru">Игры</span></button>
@@ -654,10 +634,8 @@
         <button class="tab-btn" data-tab="admin"><span class="icon">🔒</span> <span class="en">Admin</span><span class="ru">Админ</span></button>
     </nav>
 
-    <!-- ===== КОНТЕНТ ===== -->
     <div class="container">
 
-        <!-- ===== НОВОСТИ ===== -->
         <div id="news" class="tab-content active">
             <div class="panel">
                 <div class="pixel-corner pixel-corner-tl"></div>
@@ -669,7 +647,6 @@
             </div>
         </div>
 
-        <!-- ===== ИГРЫ ===== -->
         <div id="games" class="tab-content">
             <div class="panel">
                 <div class="pixel-corner pixel-corner-tl"></div>
@@ -684,7 +661,6 @@
             </div>
         </div>
 
-        <!-- ===== НАСТРОЙКИ ===== -->
         <div id="settings" class="tab-content">
             <div class="panel">
                 <div class="pixel-corner pixel-corner-tl"></div>
@@ -743,7 +719,6 @@
             </div>
         </div>
 
-        <!-- ===== КРЕДИТЫ ===== -->
         <div id="credits" class="tab-content">
             <div class="panel">
                 <div class="pixel-corner pixel-corner-tl"></div>
@@ -760,7 +735,6 @@
             </div>
         </div>
 
-        <!-- ===== АДМИН-ПАНЕЛЬ ===== -->
         <div id="admin" class="tab-content">
             <div class="panel">
                 <div class="pixel-corner pixel-corner-tl"></div>
@@ -769,16 +743,29 @@
                 <div class="pixel-corner pixel-corner-br"></div>
                 <h2><span class="en">🔒 Admin Panel</span><span class="ru">🔒 Админ-панель</span></h2>
                 <div id="adminLogin" class="admin-login">
-                    <p style="color:var(--text-muted);margin-bottom:12px;"><span class="en">Enter admin password and code</span><span class="ru">Введите пароль и код администратора</span></p>
+                    <p style="color:var(--text-muted);margin-bottom:12px;">
+                        <span class="en">Enter password and code OR upload a .txt file with the code</span>
+                        <span class="ru">Введите пароль и код ИЛИ загрузите .txt файл с кодом</span>
+                    </p>
                     <input type="password" id="adminPassword" placeholder="Password / Пароль" autocomplete="off">
                     <input type="text" id="adminCode" placeholder="Code / Код" autocomplete="off">
+                    <div style="margin:8px 0;">
+                        <span style="color:var(--text-muted);font-size:13px;"><span class="en">— or upload file —</span><span class="ru">— или загрузите файл —</span></span>
+                    </div>
+                    <div class="drop-zone" id="adminDropZone" style="padding:16px;max-width:300px;margin:0 auto;">
+                        <p style="font-size:13px;"><span class="en">Drop .txt here or click</span><span class="ru">Перетащите .txt или нажмите</span></p>
+                        <input type="file" id="adminFileInput" accept=".txt">
+                    </div>
                     <button class="btn" id="adminLoginBtn"><span class="en">Login</span><span class="ru">Войти</span></button>
-                    <div id="adminError" style="color:#ff6b6b;margin-top:8px;font-size:14px;display:none;"><span class="en">Wrong password or code!</span><span class="ru">Неверный пароль или код!</span></div>
+                    <div id="adminError" style="color:#ff6b6b;margin-top:8px;font-size:14px;display:none;">
+                        <span class="en">Wrong password, code, or file content!</span>
+                        <span class="ru">Неверный пароль, код или содержимое файла!</span>
+                    </div>
                 </div>
                 <div id="adminPanel" class="admin-panel">
-                    <!-- Загрузка кода через файл -->
+                    <!-- Загрузка кода через файл (для выполнения скриптов) -->
                     <div style="margin-bottom:20px;">
-                        <h3 style="color:var(--accent);font-size:18px;"><span class="en">📂 Load Code from File</span><span class="ru">📂 Загрузить код из файла</span></h3>
+                        <h3 style="color:var(--accent);font-size:18px;"><span class="en">📂 Load Script from File</span><span class="ru">📂 Загрузить скрипт из файла</span></h3>
                         <div class="drop-zone" id="dropZone">
                             <p><span class="en">Drag & drop a .js or .txt file here, or click to select</span><span class="ru">Перетащите .js или .txt файл сюда, или нажмите для выбора</span></p>
                             <input type="file" id="fileInput" accept=".js,.txt">
@@ -788,6 +775,10 @@
                         <button class="btn btn-small" id="exportDataBtn"><span class="en">📤 Export All Data</span><span class="ru">📤 Экспорт всех данных</span></button>
                         <button class="btn btn-small" id="importDataBtn"><span class="en">📥 Import Data</span><span class="ru">📥 Импорт данных</span></button>
                         <input type="file" id="importFileInput" accept=".json" style="display:none;">
+                    </div>
+                    <div style="background:rgba(255,255,0,0.1);border:1px solid #ffaa00;border-radius:6px;padding:10px;margin-bottom:16px;color:#ffaa00;font-size:13px;">
+                        <span class="en">⚠️ Data is stored locally in your browser. To share with others, export the data and share the JSON file.</span>
+                        <span class="ru">⚠️ Данные хранятся локально в вашем браузере. Чтобы поделиться с другими, экспортируйте данные и поделитесь JSON-файлом.</span>
                     </div>
                     <!-- Новости -->
                     <div class="admin-form">
@@ -850,39 +841,28 @@
 
     </div>
 
-    <!-- ===== ПОДВАЛ ===== -->
     <footer>
         <p>⊹ ࣪ ˖ YUNISTORE ˖ ࣪ ⊹</p>
         <div class="small"><span class="en">Game store by YuninLoL — All games are free!</span><span class="ru">Магазин игр от YuninLoL — Все игры бесплатны!</span></div>
     </footer>
 
-    <!-- ===== МУЗЫКА ===== -->
     <audio id="bgMusic" loop autoplay>
         <source src="./audio/bg-music.mp3" type="audio/mpeg">
         <span class="en">Your browser does not support audio.</span>
         <span class="ru">Твой браузер не поддерживает аудио.</span>
     </audio>
 
-    <!-- ===== УВЕДОМЛЕНИЕ ===== -->
     <div id="toast" class="toast"></div>
 
     <script>
         // ============================================================
-        //  YUNISTORE — ПОЛНЫЙ СКРИПТ
+        //  YUNISTORE — ПОЛНЫЙ СКРИПТ (ФИНАЛ)
         // ============================================================
 
-        // ===== ОПТИМИЗАЦИЯ ПРОИЗВОДИТЕЛЬНОСТИ =====
-        let graphicsSettings = {
-            quality: 'auto',
-            particles: 'on',
-            animSpeed: 1
-        };
-
-        // Авто-определение мощности
+        // ===== ОПТИМИЗАЦИЯ =====
         function detectPerformance() {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const isSlow = isMobile || window.navigator.hardwareConcurrency < 4;
-            return isSlow ? 'low' : 'high';
+            return isMobile ? 'low' : 'high';
         }
 
         function applyGraphics() {
@@ -890,17 +870,9 @@
             let q = quality === 'auto' ? detectPerformance() : quality;
             const particles = document.getElementById('particlesSelect').value;
             const animSpeed = parseFloat(document.getElementById('animSpeedSelect').value);
-
-            graphicsSettings.quality = q;
-            graphicsSettings.particles = particles;
-            graphicsSettings.animSpeed = animSpeed;
-
-            // Применяем настройки к элементам
             const bgWrap = document.getElementById('bgWrap');
             if (q === 'low') {
                 bgWrap.style.animationDuration = '60s';
-                bgWrap.style.animationPlayState = 'running';
-                // уменьшаем количество частиц через opacity
                 document.querySelector('.bg-wrap::after').style.opacity = '0';
             } else if (q === 'medium') {
                 bgWrap.style.animationDuration = '30s';
@@ -909,29 +881,19 @@
                 bgWrap.style.animationDuration = '20s';
                 document.querySelector('.bg-wrap::after').style.opacity = '1';
             }
-
-            // Частицы
-            const particlesStyle = document.querySelector('.bg-wrap::after');
             if (particles === 'off') {
-                particlesStyle.style.opacity = '0';
+                document.querySelector('.bg-wrap::after').style.opacity = '0';
             } else {
-                particlesStyle.style.opacity = q === 'low' ? '0.3' : '1';
+                document.querySelector('.bg-wrap::after').style.opacity = q === 'low' ? '0.3' : '1';
             }
-
-            // Скорость анимации
             document.querySelectorAll('.tab-btn, .btn, .news-item, .game-item').forEach(el => {
                 el.style.transitionDuration = (0.3 * animSpeed) + 's';
             });
-            // логотип
             document.querySelector('.logo').style.animationDuration = (3 * animSpeed) + 's';
-            // фон
             bgWrap.style.animationDuration = (30 / (animSpeed || 0.5)) + 's';
-
-            // Сохраняем настройки
             localStorage.setItem('yuniGraphics', JSON.stringify({ quality, particles, animSpeed }));
         }
 
-        // ===== ЗАГРУЗКА НАСТРОЕК =====
         function loadGraphicsSettings() {
             const saved = localStorage.getItem('yuniGraphics');
             if (saved) {
@@ -945,7 +907,7 @@
             applyGraphics();
         }
 
-        // ===== ТЕМЫ (5 ШАБЛОНОВ) =====
+        // ===== ТЕМЫ =====
         const themes = {
             default: {
                 '--bg-primary': '#0d0d0d',
@@ -1019,13 +981,13 @@
             }
         };
 
-        function applyTheme(themeName) {
-            const theme = themes[themeName] || themes.default;
+        function applyTheme(name) {
+            const t = themes[name] || themes.default;
             const root = document.documentElement;
-            for (const [key, value] of Object.entries(theme)) {
-                root.style.setProperty(key, value);
+            for (const [key, val] of Object.entries(t)) {
+                root.style.setProperty(key, val);
             }
-            localStorage.setItem('yuniTheme', themeName);
+            localStorage.setItem('yuniTheme', name);
         }
 
         function loadTheme() {
@@ -1038,7 +1000,7 @@
             }
         }
 
-        // ===== ОБЩИЕ ФУНКЦИИ =====
+        // ===== ОБЩЕЕ =====
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -1096,7 +1058,7 @@
                 const tabId = this.dataset.tab;
                 tabBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                tabContents.forEach(content => content.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
                 document.getElementById(tabId).classList.add('active');
             });
         });
@@ -1150,7 +1112,8 @@
             const data = loadNews();
             const list = document.getElementById('adminNewsList');
             if (!data.length) {
-                list.innerHTML = `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No news.</span><span class="ru">Нет новостей.</span></p>`;
+                list.innerHTML =
+                    `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No news.</span><span class="ru">Нет новостей.</span></p>`;
                 return;
             }
             let html = '';
@@ -1177,6 +1140,7 @@
             });
         }
 
+        // ===== ДОБАВЛЕНИЕ НОВОСТИ =====
         document.getElementById('addNewsBtn').addEventListener('click', function() {
             const title = document.getElementById('newsTitle').value.trim();
             const text = document.getElementById('newsText').value.trim();
@@ -1261,7 +1225,7 @@
             const list = document.getElementById('adminGamesList');
             if (!data.length) {
                 list.innerHTML =
-                `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No games.</span><span class="ru">Нет игр.</span></p>`;
+                    `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No games.</span><span class="ru">Нет игр.</span></p>`;
                 return;
             }
             let html = '';
@@ -1297,7 +1261,6 @@
             const link = document.getElementById('gameLink').value.trim();
             if (!title) { showToast('Game title required!'); return; }
             const data = loadGames();
-            // если есть игра с таким названием — обновляем
             const existing = data.findIndex(g => g.title === title);
             const gameObj = { title, desc, version, icon, status, link };
             if (existing >= 0) {
@@ -1317,23 +1280,68 @@
             renderAdminGames();
         });
 
-        // ===== АДМИН-ЛОГИН =====
+        // ===== АДМИН-ЛОГИН (с загрузкой файла) =====
+        const adminLoginDiv = document.getElementById('adminLogin');
+        const adminPanelDiv = document.getElementById('adminPanel');
+        const adminErrorDiv = document.getElementById('adminError');
+
+        function checkAdminCredentials(password, code) {
+            return password === '99' && code === 'LiveCoockesBaldi99';
+        }
+
+        function grantAccess() {
+            adminLoginDiv.style.display = 'none';
+            adminPanelDiv.classList.add('active');
+            renderAdminNews();
+            renderAdminGames();
+            showToast('Access granted!');
+        }
+
         document.getElementById('adminLoginBtn').addEventListener('click', function() {
             const pass = document.getElementById('adminPassword').value;
             const code = document.getElementById('adminCode').value;
-            if (pass === '99' && code === 'LiveCoockesBaldi99') {
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminPanel').classList.add('active');
-                renderAdminNews();
-                renderAdminGames();
-                showToast('Access granted!');
+            if (checkAdminCredentials(pass, code)) {
+                grantAccess();
             } else {
-                document.getElementById('adminError').style.display = 'block';
-                setTimeout(() => { document.getElementById('adminError').style.display = 'none'; }, 3000);
+                adminErrorDiv.style.display = 'block';
+                setTimeout(() => { adminErrorDiv.style.display = 'none'; }, 3000);
             }
         });
 
-        // ===== ЗАГРУЗКА КОДА ЧЕРЕЗ ФАЙЛ =====
+        // Загрузка файла с кодом для входа
+        const adminDropZone = document.getElementById('adminDropZone');
+        const adminFileInput = document.getElementById('adminFileInput');
+
+        adminDropZone.addEventListener('click', () => adminFileInput.click());
+        adminDropZone.addEventListener('dragover', (e) => { e.preventDefault();
+            adminDropZone.classList.add('dragover'); });
+        adminDropZone.addEventListener('dragleave', () => adminDropZone.classList.remove('dragover'));
+        adminDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            adminDropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleAdminFile(e.dataTransfer.files[0]);
+        });
+        adminFileInput.addEventListener('change', function() {
+            if (this.files.length) handleAdminFile(this.files[0]);
+            this.value = '';
+        });
+
+        function handleAdminFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result.trim();
+                if (content === 'LiveCoockesBaldi99') {
+                    grantAccess();
+                } else {
+                    adminErrorDiv.style.display = 'block';
+                    setTimeout(() => { adminErrorDiv.style.display = 'none'; }, 3000);
+                    showToast('Invalid code in file!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ===== ЗАГРУЗКА СКРИПТА ЧЕРЕЗ ФАЙЛ =====
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
@@ -1344,32 +1352,30 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length) handleFile(files[0]);
+            if (e.dataTransfer.files.length) handleScriptFile(e.dataTransfer.files[0]);
         });
         fileInput.addEventListener('change', function() {
-            if (this.files.length) handleFile(this.files[0]);
+            if (this.files.length) handleScriptFile(this.files[0]);
             this.value = '';
         });
 
-        function handleFile(file) {
+        function handleScriptFile(file) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const code = e.target.result;
-                    // Выполняем код в консоли
                     const script = document.createElement('script');
                     script.textContent = code;
                     document.head.appendChild(script);
-                    showToast('Code loaded and executed!');
+                    showToast('Script loaded and executed!');
                 } catch (err) {
-                    showToast('Error loading code: ' + err.message);
+                    showToast('Error: ' + err.message);
                 }
             };
             reader.readAsText(file);
         }
 
-        // ===== ЭКСПОРТ/ИМПОРТ ДАННЫХ =====
+        // ===== ЭКСПОРТ/ИМПОРТ =====
         document.getElementById('exportDataBtn').addEventListener('click', function() {
             const data = {
                 news: loadNews(),
@@ -1385,7 +1391,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'yunistore_backup.json';
+            a.download = 'yunistore_data.json';
             a.click();
             URL.revokeObjectURL(url);
             showToast('Data exported!');
@@ -1408,7 +1414,6 @@
                         if (data.settings.theme) localStorage.setItem('yuniTheme', data.settings.theme);
                         if (data.settings.graphics) localStorage.setItem('yuniGraphics', data.settings.graphics);
                     }
-                    // перезагружаем всё
                     renderNews();
                     renderGames();
                     loadTheme();
@@ -1443,7 +1448,9 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = filename || 'test-file.txt';
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showToast('Downloaded: ' + a.download);
         }
@@ -1458,7 +1465,6 @@
             loadTheme();
             loadGraphicsSettings();
 
-            // Подписка на изменения настроек
             document.getElementById('themeSelect').addEventListener('change', function() {
                 applyTheme(this.value);
             });
@@ -1466,7 +1472,7 @@
             document.getElementById('particlesSelect').addEventListener('change', applyGraphics);
             document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
 
-            // Стартовые новости, если пусто
+            // Стартовые данные
             if (!loadNews().length) {
                 const defaultNews = [{
                     title: 'YuniStore is live! / YuniStore запущен!',
@@ -1495,8 +1501,6 @@
                 }];
                 saveNews(defaultNews);
             }
-
-            // Стартовые игры, если пусто
             if (!loadGames().length) {
                 const defaultGames = [{
                     title: 'Universe Yunin',
@@ -1520,6 +1524,7 @@
             renderGames();
             console.log('YuniStore loaded!');
             console.log('Password: 99, Code: LiveCoockesBaldi99');
+            console.log('You can also upload a .txt file with the code to login.');
         }
 
         init();
