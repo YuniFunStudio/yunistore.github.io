@@ -6,7 +6,9 @@
     <title>YuniStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        /* ===== ВСЕ ТЕ ЖЕ СТИЛИ, ЧТО И РАНЬШЕ ===== */
+        /* ================================================================
+           СТИЛИ (ОПТИМИЗИРОВАНЫ, БЕЗ ИЗМЕНЕНИЙ)
+           ================================================================ */
         :root {
             --bg-primary: #0d0d0d;
             --bg-secondary: #1a1a2e;
@@ -579,7 +581,6 @@
             max-width: 90%;
         }
 
-        /* ===== ИНДИКАТОР ЗАГРУЗКИ ===== */
         .loading-indicator {
             text-align: center;
             padding: 20px;
@@ -687,11 +688,7 @@
                 <div class="pixel-corner pixel-corner-bl"></div>
                 <div class="pixel-corner pixel-corner-br"></div>
                 <h2><span class="en">📰 Latest News</span><span class="ru">📰 Последние новости</span></h2>
-                <div id="newsFeed">
-                    <div class="loading-indicator">
-                        <span class="spinner"></span> <span class="en">Loading news...</span><span class="ru">Загрузка новостей...</span>
-                    </div>
-                </div>
+                <div id="newsFeed"></div>
             </div>
         </div>
 
@@ -705,11 +702,7 @@
                 <p style="font-size:14px;color:var(--text-muted);margin-bottom:14px;">
                     <span class="en">All games are free. Download and play!</span><span class="ru">Все игры бесплатны. Скачивай и играй!</span>
                 </p>
-                <div id="gamesContainer">
-                    <div class="loading-indicator">
-                        <span class="spinner"></span> <span class="en">Loading games...</span><span class="ru">Загрузка игр...</span>
-                    </div>
-                </div>
+                <div id="gamesContainer"></div>
             </div>
         </div>
 
@@ -827,12 +820,12 @@
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                             <button class="btn btn-small" id="saveToGitHubBtn">💾 <span class="en">Save to GitHub</span><span class="ru">Сохранить на GitHub</span></button>
                             <span class="github-status" id="saveStatus"></span>
+                            <button class="btn btn-small" id="reloadFromGitHubBtn" style="background:#1a3a6a;">🔄 <span class="en">Reload Data</span><span class="ru">Обновить</span></button>
                         </div>
                         <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
                             <span class="en">Token needed only for saving. File: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
                             <span class="ru">Токен нужен только для сохранения. Файл: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
                         </div>
-                        <button class="btn btn-small" id="reloadFromGitHubBtn" style="margin-top:8px;background:#1a3a6a;">🔄 <span class="en">Reload Data from GitHub</span><span class="ru">Обновить данные с GitHub</span></button>
                     </div>
 
                     <div style="margin-bottom:20px;">
@@ -917,19 +910,19 @@
 
     <div id="toast" class="toast"></div>
 
+    <!-- ============================================================= -->
+    <!--  СКРИПТ (ОБНОВЛЁННЫЙ, С ТАЙМАУТОМ И МГНОВЕННЫМ ЗАПУСКОМ)   -->
+    <!-- ============================================================= -->
     <script>
         // ============================================================
-        //  YUNISTORE — АВТООБНОВЛЕНИЕ С GITHUB
+        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ С БЫСТРОЙ ЗАГРУЗКОЙ
         // ============================================================
 
+        // ===== КОНСТАНТЫ =====
         const REPO_OWNER = 'YuniFunStudio';
         const REPO_NAME = 'yunistore.github.io';
         const DATA_FILE = 'data.json';
         const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
-
-        // ===== ПЕРЕМЕННЫЕ ДЛЯ ОЧЕРЕДИ ОБНОВЛЕНИЙ =====
-        let updateQueue = [];
-        let isUpdating = false;
 
         // ===== ОПТИМИЗАЦИЯ =====
         function detectPerformance() {
@@ -1365,15 +1358,14 @@
             reader.readAsText(file);
         }
 
-        // ===== GITHUB: ЗАГРУЗКА ДАННЫХ (С КЭШИРОВАНИЕМ) =====
-        let cachedData = null;
-
-        async function loadDataFromGitHub(force = false) {
-            if (cachedData && !force) return cachedData;
+        // ===== GITHUB: ЗАГРУЗКА С ТАЙМАУТОМ =====
+        async function loadDataFromGitHub() {
             try {
-                // Добавляем случайный параметр для обхода кэша
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
                 const url = GITHUB_API + '?t=' + Date.now();
-                const response = await fetch(url);
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 if (!response.ok) {
                     if (response.status === 404) {
                         console.warn('data.json not found');
@@ -1383,16 +1375,18 @@
                 }
                 const data = await response.json();
                 const content = atob(data.content);
-                const parsed = JSON.parse(content);
-                cachedData = parsed;
-                return parsed;
+                return JSON.parse(content);
             } catch (e) {
-                console.warn('Failed to load data.json:', e);
+                if (e.name === 'AbortError') {
+                    console.warn('GitHub load timeout (3s) — using local data');
+                } else {
+                    console.warn('Failed to load data.json:', e);
+                }
                 return null;
             }
         }
 
-        // ===== ЗАГРУЗКА ДАННЫХ ПРИ ОТКРЫТИИ САЙТА =====
+        // ===== ЗАГРУЗКА ДАННЫХ ПРИ ОТКРЫТИИ =====
         async function loadDataOnStart() {
             try {
                 const remoteData = await loadDataFromGitHub();
@@ -1408,13 +1402,70 @@
             }
         }
 
-        // ===== КНОПКА ОБНОВЛЕНИЯ ДАННЫХ =====
+        // ===== СОХРАНЕНИЕ НА GITHUB =====
+        async function saveDataToGitHub(data) {
+            const token = document.getElementById('githubToken').value.trim();
+            if (!token) { showToast('Enter GitHub token!'); return; }
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.textContent = '⏳ Saving...';
+            statusEl.style.color = 'var(--text-muted)';
+            try {
+                let sha = null;
+                let getResponse = await fetch(GITHUB_API, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                } else if (getResponse.status !== 404) {
+                    throw new Error('Failed to get file info: ' + getResponse.status);
+                }
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+                const payload = {
+                    message: 'Update data from YuniStore',
+                    content: content,
+                    branch: 'main'
+                };
+                if (sha) payload.sha = sha;
+                const putResponse = await fetch(GITHUB_API, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!putResponse.ok) {
+                    const err = await putResponse.json();
+                    throw new Error(err.message || 'Unknown error');
+                }
+                statusEl.textContent = '✅ Saved!';
+                statusEl.style.color = '#4CFF00';
+                showToast('Data saved to GitHub!');
+                localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
+                localStorage.setItem('yuniGames', JSON.stringify(data.games || []));
+                renderNews();
+                renderGames();
+            } catch (e) {
+                statusEl.textContent = '❌ Error: ' + e.message;
+                statusEl.style.color = '#ff6b6b';
+                showToast('Save error: ' + e.message);
+            }
+        }
+
+        // ===== КНОПКИ =====
+        document.getElementById('saveToGitHubBtn').addEventListener('click', function() {
+            const news = loadNews();
+            const games = loadGames();
+            const data = { news, games };
+            saveDataToGitHub(data);
+        });
+
         document.getElementById('reloadFromGitHubBtn').addEventListener('click', async function() {
             const statusEl = document.getElementById('saveStatus');
             statusEl.textContent = '⏳ Loading...';
             statusEl.style.color = 'var(--text-muted)';
-            cachedData = null; // Сбрасываем кэш
-            const remoteData = await loadDataFromGitHub(true);
+            const remoteData = await loadDataFromGitHub();
             if (remoteData) {
                 if (remoteData.news) saveNews(remoteData.news);
                 if (remoteData.games) saveGames(remoteData.games);
@@ -1428,75 +1479,6 @@
                 statusEl.style.color = '#ff6b6b';
                 showToast('No data.json found on GitHub');
             }
-        });
-
-        // ===== СОХРАНЕНИЕ НА GITHUB =====
-        async function saveDataToGitHub(data) {
-            const token = document.getElementById('githubToken').value.trim();
-            if (!token) {
-                showToast('Enter GitHub token!');
-                return;
-            }
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = '⏳ Saving...';
-            statusEl.style.color = 'var(--text-muted)';
-
-            try {
-                let sha = null;
-                let getResponse = await fetch(GITHUB_API, {
-                    headers: { 'Authorization': `token ${token}` }
-                });
-                if (getResponse.ok) {
-                    const fileData = await getResponse.json();
-                    sha = fileData.sha;
-                } else if (getResponse.status !== 404) {
-                    throw new Error('Failed to get file info: ' + getResponse.status);
-                }
-
-                const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-                const payload = {
-                    message: 'Update data from YuniStore',
-                    content: content,
-                    branch: 'main'
-                };
-                if (sha) payload.sha = sha;
-
-                const putResponse = await fetch(GITHUB_API, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!putResponse.ok) {
-                    const err = await putResponse.json();
-                    throw new Error(err.message || 'Unknown error');
-                }
-
-                statusEl.textContent = '✅ Saved!';
-                statusEl.style.color = '#4CFF00';
-                cachedData = null; // Сбрасываем кэш
-                showToast('Data saved to GitHub!');
-                // Обновляем локальные данные
-                localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
-                localStorage.setItem('yuniGames', JSON.stringify(data.games || []));
-                renderNews();
-                renderGames();
-            } catch (e) {
-                statusEl.textContent = '❌ Error: ' + e.message;
-                statusEl.style.color = '#ff6b6b';
-                showToast('Save error: ' + e.message);
-            }
-        }
-
-        // ===== КНОПКА СОХРАНЕНИЯ =====
-        document.getElementById('saveToGitHubBtn').addEventListener('click', function() {
-            const news = loadNews();
-            const games = loadGames();
-            const data = { news, games };
-            saveDataToGitHub(data);
         });
 
         // ===== СКАЧИВАНИЕ ТЕСТОВЫХ ФАЙЛОВ =====
@@ -1533,7 +1515,7 @@
             if (music.paused) music.play().catch(e => {});
         });
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        // ===== ИНИЦИАЛИЗАЦИЯ (БЫСТРАЯ) =====
         async function init() {
             loadTheme();
             loadGraphicsSettings();
@@ -1543,81 +1525,88 @@
             document.getElementById('particlesSelect').addEventListener('change', applyGraphics);
             document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
 
-            // Загружаем данные с GitHub ПРИ КАЖДОМ ОТКРЫТИИ САЙТА
-            const hasRemote = await loadDataOnStart();
-
-            // Если на GitHub нет данных — используем стартовые
-            if (!hasRemote) {
-                if (!loadNews().length) {
-                    const defaultNews = [{
-                        title: 'YuniStore is live! / YuniStore запущен!',
-                        text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
-                        tags: ['news', 'video'],
-                        video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                        photo: '',
-                        file: '',
-                        date: '22 августа 2026'
-                    }, {
-                        title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
-                        text: 'Check out the new trailer! / Посмотри новый трейлер!',
-                        tags: ['video', 'update'],
-                        video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                        photo: '',
-                        file: '',
-                        date: '20 августа 2026'
-                    }, {
-                        title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
-                        text: 'Download the latest version. / Скачай последнюю версию.',
-                        tags: ['file', 'update'],
-                        video: '',
-                        photo: '',
-                        file: 'yunin-school-legacy-v2.1.zip',
-                        date: '15 августа 2026'
-                    }];
-                    saveNews(defaultNews);
-                }
-                if (!loadGames().length) {
-                    const defaultGames = [{
-                        title: 'Universe Yunin',
-                        desc: 'New universe, new hero, mysterious school.',
-                        version: 'v0.5',
-                        icon: './images/universe-icon.png',
-                        status: 'wip',
-                        link: ''
-                    }, {
-                        title: 'Yunin School Legacy',
-                        desc: 'Classic Baldi\'s Basics style game.',
-                        version: 'v2.1',
-                        icon: './images/legacy-icon.png',
-                        status: 'released',
-                        link: ''
-                    }];
-                    saveGames(defaultGames);
-                }
+            // --- 1. Сначала показываем локальные данные (мгновенно) ---
+            // если локальных данных нет — ставим стартовые
+            if (!loadNews().length) {
+                const defaultNews = [{
+                    title: 'YuniStore is live! / YuniStore запущен!',
+                    text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
+                    tags: ['news', 'video'],
+                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    photo: '',
+                    file: '',
+                    date: '22 августа 2026'
+                }, {
+                    title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
+                    text: 'Check out the new trailer! / Посмотри новый трейлер!',
+                    tags: ['video', 'update'],
+                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    photo: '',
+                    file: '',
+                    date: '20 августа 2026'
+                }, {
+                    title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
+                    text: 'Download the latest version. / Скачай последнюю версию.',
+                    tags: ['file', 'update'],
+                    video: '',
+                    photo: '',
+                    file: 'yunin-school-legacy-v2.1.zip',
+                    date: '15 августа 2026'
+                }];
+                saveNews(defaultNews);
+            }
+            if (!loadGames().length) {
+                const defaultGames = [{
+                    title: 'Universe Yunin',
+                    desc: 'New universe, new hero, mysterious school.',
+                    version: 'v0.5',
+                    icon: './images/universe-icon.png',
+                    status: 'wip',
+                    link: ''
+                }, {
+                    title: 'Yunin School Legacy',
+                    desc: 'Classic Baldi\'s Basics style game.',
+                    version: 'v2.1',
+                    icon: './images/legacy-icon.png',
+                    status: 'released',
+                    link: ''
+                }];
+                saveGames(defaultGames);
             }
 
             renderNews();
             renderGames();
 
-            // Если есть токен в localStorage, подставляем его
+            // --- 2. В фоне пытаемся загрузить с GitHub (3 сек таймаут) ---
+            try {
+                const hasRemote = await loadDataOnStart();
+                if (hasRemote) {
+                    renderNews();
+                    renderGames();
+                    showToast('Data updated from GitHub');
+                }
+            } catch (e) {
+                // игнорируем ошибки фоновой загрузки
+            }
+
+            // --- 3. Токен ---
             const savedToken = localStorage.getItem('githubToken');
             if (savedToken) {
                 document.getElementById('githubToken').value = savedToken;
             }
-
             document.getElementById('githubToken').addEventListener('change', function() {
                 if (this.value.trim()) {
                     localStorage.setItem('githubToken', this.value.trim());
                 }
             });
 
-            console.log('YuniStore loaded!');
-            console.log('Password: 99, Code: LiveCoockesBaldi99');
-            console.log('Data auto-loaded from GitHub on every visit!');
+            console.log('✅ YuniStore loaded!');
+            console.log('🔑 Password: 99, Code: LiveCoockesBaldi99');
+            console.log('🌐 Data auto-sync with GitHub (3s timeout)');
         }
 
+        // Запускаем
         init();
     </script>
-
 </body>
 </html>
