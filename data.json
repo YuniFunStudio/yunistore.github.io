@@ -1,0 +1,37 @@
+{
+  "news": [
+    {
+      "title": "Тест Новостей",
+      "text": "Сегодня я решил проверить это",
+      "tags": [
+        "news",
+        "devlog"
+      ],
+      "video": "",
+      "photo": "",
+      "file": "",
+      "date": "23 августа 2026 г."
+    },
+    {
+      "title": "смсм",
+      "text": "мсмсмсм",
+      "tags": [
+        "file"
+      ],
+      "video": "",
+      "photo": "",
+      "file": "тЕСТ",
+      "date": "23 августа 2026 г."
+    }
+  ],
+  "games": [
+    {
+      "title": "Yunin's School Legacy",
+      "desc": "Yunina's Awesome School is the best school because... well... I don't know what to say, just be jealous, she's the coolest (I'm sick of it).  Unfortunately, Baldi got really sick and asked Yunina to teach math instead of him.   There are 5 friends in the game: Yunina  Voca is Yunina's younger brother who loves balls;  Goffa is a bully who respects Yunina but sometimes doesn't even say her name;  Mr. Drawing - often envied by those who have more documents, but so cute when at home;  Electric Mop - gift from Red Ger.",
+      "version": "1.1",
+      "icon": "https://raw.githubusercontent.com/YuniFunStudio/yunistore.github.io/refs/heads/main/images/legacy-icon.png",
+      "status": "released",
+      "link": "https://gamebanana.com/dl/1761425"
+    }
+  ]
+}
