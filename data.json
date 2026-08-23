@@ -1,29 +1,5 @@
 {
-  "news": [
-    {
-      "title": "Тест Новостей",
-      "text": "Сегодня я решил проверить это",
-      "tags": [
-        "news",
-        "devlog"
-      ],
-      "video": "",
-      "photo": "",
-      "file": "",
-      "date": "23 августа 2026 г."
-    },
-    {
-      "title": "смсм",
-      "text": "мсмсмсм",
-      "tags": [
-        "file"
-      ],
-      "video": "",
-      "photo": "",
-      "file": "тЕСТ",
-      "date": "23 августа 2026 г."
-    }
-  ],
+  "news": [],
   "games": [
     {
       "title": "Yunin's School Legacy",
