@@ -911,695 +911,800 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ============================================================
-        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ (ДАТА ИСПРАВЛЕНА)
-        // ============================================================
+// ============================================================
+//  YUNISTORE — ИСПРАВЛЕННАЯ ВЕРСИЯ (ПРОВЕРКА ЭЛЕМЕНТОВ)
+// ============================================================
 
-        const REPO_OWNER = 'YuniFunStudio';
-        const REPO_NAME = 'yunistore.github.io';
-        const DATA_FILE = 'data.json';
-        const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
+const REPO_OWNER = 'YuniFunStudio';
+const REPO_NAME = 'yunistore.github.io';
+const DATA_FILE = 'data.json';
+const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
 
-        // ===== ОПТИМИЗАЦИЯ =====
-        function detectPerformance() {
-            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            return isMobile ? 'low' : 'high';
-        }
+// ===== ОПТИМИЗАЦИЯ =====
+function detectPerformance() {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    return isMobile ? 'low' : 'high';
+}
 
-        function applyGraphics() {
-            const quality = document.getElementById('graphicsSelect').value;
-            let q = quality === 'auto' ? detectPerformance() : quality;
-            const particles = document.getElementById('particlesSelect').value;
-            const animSpeed = parseFloat(document.getElementById('animSpeedSelect').value);
-            const bgWrap = document.getElementById('bgWrap');
-            if (q === 'low') { bgWrap.style.animationDuration = '60s';
-                document.querySelector('.bg-wrap::after').style.opacity = '0'; } else if (q === 'medium') { bgWrap
-                    .style.animationDuration = '30s';
-                document.querySelector('.bg-wrap::after').style.opacity = '0.5'; } else { bgWrap.style.animationDuration =
-                    '20s';
-                document.querySelector('.bg-wrap::after').style.opacity = '1'; }
-            if (particles === 'off') { document.querySelector('.bg-wrap::after').style.opacity = '0'; } else { document
-                    .querySelector('.bg-wrap::after').style.opacity = q === 'low' ? '0.3' : '1'; }
-            document.querySelectorAll('.tab-btn, .btn, .news-item, .game-item').forEach(el => {
-                el.style.transitionDuration = (0.3 * animSpeed) + 's';
-            });
-            document.querySelector('.logo').style.animationDuration = (3 * animSpeed) + 's';
-            bgWrap.style.animationDuration = (30 / (animSpeed || 0.5)) + 's';
-            localStorage.setItem('yuniGraphics', JSON.stringify({ quality, particles, animSpeed }));
-        }
+function applyGraphics() {
+    const graphicsSelect = document.getElementById('graphicsSelect');
+    const particlesSelect = document.getElementById('particlesSelect');
+    const animSpeedSelect = document.getElementById('animSpeedSelect');
+    const bgWrap = document.getElementById('bgWrap');
+    const logo = document.getElementById('mainLogo');
 
-        function loadGraphicsSettings() {
-            const saved = localStorage.getItem('yuniGraphics');
-            if (saved) {
-                try { const d = JSON.parse(saved);
-                    document.getElementById('graphicsSelect').value = d.quality || 'auto';
-                    document.getElementById('particlesSelect').value = d.particles || 'on';
-                    document.getElementById('animSpeedSelect').value = d.animSpeed || '1'; } catch (e) {}
-            }
-            applyGraphics();
-        }
+    // Проверяем, что все элементы существуют
+    if (!graphicsSelect || !particlesSelect || !animSpeedSelect || !bgWrap) {
+        console.warn('Graphics elements not ready yet');
+        return;
+    }
 
-        // ===== ТЕМЫ =====
-        const themes = {
-            default: { '--bg-primary': '#0d0d0d', '--bg-secondary': '#1a1a2e', '--bg-panel': 'rgba(22,33,62,0.88)',
-                    '--border-color': '#0f3460', '--accent': '#4a9eff', '--accent2': '#6c5ce7', '--accent3': '#00d2d3',
-                    '--text-primary': '#e0e0e0', '--text-secondary': '#c8c8c8', '--text-muted': '#888',
-                    '--card-bg': 'rgba(15,52,96,0.25)', '--card-border': '#1a3a6a' },
-            red: { '--bg-primary': '#1a0a0a', '--bg-secondary': '#2e1a1a', '--bg-panel': 'rgba(62,22,22,0.88)',
-                    '--border-color': '#600f0f', '--accent': '#ff4a4a', '--accent2': '#e75c5c', '--accent3': '#d30000',
-                    '--text-primary': '#f0d0d0', '--text-secondary': '#d0b0b0', '--text-muted': '#a07070',
-                    '--card-bg': 'rgba(96,15,15,0.25)', '--card-border': '#6a1a1a' },
-            green: { '--bg-primary': '#0a1a0a', '--bg-secondary': '#1a2e1a', '--bg-panel': 'rgba(22,62,22,0.88)',
-                    '--border-color': '#0f600f', '--accent': '#4aff4a', '--accent2': '#5ce75c', '--accent3': '#00d300',
-                    '--text-primary': '#d0f0d0', '--text-secondary': '#b0d0b0', '--text-muted': '#70a070',
-                    '--card-bg': 'rgba(15,96,15,0.25)', '--card-border': '#1a6a1a' },
-            purple: { '--bg-primary': '#0d0a1a', '--bg-secondary': '#1e1a2e', '--bg-panel': 'rgba(33,22,62,0.88)',
-                    '--border-color': '#2f0f60', '--accent': '#b04aff', '--accent2': '#8c5ce7', '--accent3': '#6a00d3',
-                    '--text-primary': '#e0d0f0', '--text-secondary': '#c8b0d0', '--text-muted': '#8870a0',
-                    '--card-bg': 'rgba(47,15,96,0.25)', '--card-border': '#3a1a6a' },
-            orange: { '--bg-primary': '#1a120a', '--bg-secondary': '#2e221a', '--bg-panel': 'rgba(62,42,22,0.88)',
-                    '--border-color': '#60300f', '--accent': '#ff8c4a', '--accent2': '#e77c5c', '--accent3': '#d35a00',
-                    '--text-primary': '#f0e0d0', '--text-secondary': '#d0c0b0', '--text-muted': '#a09070',
-                    '--card-bg': 'rgba(96,48,15,0.25)', '--card-border': '#6a3a1a' }
-        };
+    const quality = graphicsSelect.value;
+    let q = quality === 'auto' ? detectPerformance() : quality;
+    const particles = particlesSelect.value;
+    const animSpeed = parseFloat(animSpeedSelect.value);
 
-        function applyTheme(name) {
-            const t = themes[name] || themes.default;
-            const root = document.documentElement;
-            for (const [k, v] of Object.entries(t)) { root.style.setProperty(k, v); }
-            localStorage.setItem('yuniTheme', name);
-        }
+    // Применяем настройки
+    if (q === 'low') { 
+        bgWrap.style.animationDuration = '60s'; 
+        document.querySelector('.bg-wrap::after').style.opacity = '0'; 
+    } else if (q === 'medium') { 
+        bgWrap.style.animationDuration = '30s'; 
+        document.querySelector('.bg-wrap::after').style.opacity = '0.5'; 
+    } else { 
+        bgWrap.style.animationDuration = '20s'; 
+        document.querySelector('.bg-wrap::after').style.opacity = '1'; 
+    }
 
-        function loadTheme() {
-            const saved = localStorage.getItem('yuniTheme');
-            if (saved && themes[saved]) { document.getElementById('themeSelect').value = saved;
-                applyTheme(saved); } else { applyTheme('default'); }
-        }
+    if (particles === 'off') { 
+        document.querySelector('.bg-wrap::after').style.opacity = '0'; 
+    } else { 
+        document.querySelector('.bg-wrap::after').style.opacity = q === 'low' ? '0.3' : '1'; 
+    }
 
-        // ===== ОБЩЕЕ =====
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.style.display = 'block';
-            clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
-        }
+    document.querySelectorAll('.tab-btn, .btn, .news-item, .game-item').forEach(el => {
+        el.style.transitionDuration = (0.3 * animSpeed) + 's';
+    });
 
-        // ===== МУЗЫКА =====
-        const music = document.getElementById('bgMusic');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeValue = document.getElementById('volumeValue');
+    if (logo) {
+        logo.style.animationDuration = (3 * animSpeed) + 's';
+    }
+    bgWrap.style.animationDuration = (30 / (animSpeed || 0.5)) + 's';
+
+    localStorage.setItem('yuniGraphics', JSON.stringify({ quality, particles, animSpeed }));
+}
+
+function loadGraphicsSettings() {
+    const saved = localStorage.getItem('yuniGraphics');
+    if (saved) {
+        try { 
+            const d = JSON.parse(saved);
+            const graphicsSelect = document.getElementById('graphicsSelect');
+            const particlesSelect = document.getElementById('particlesSelect');
+            const animSpeedSelect = document.getElementById('animSpeedSelect');
+            if (graphicsSelect) graphicsSelect.value = d.quality || 'auto';
+            if (particlesSelect) particlesSelect.value = d.particles || 'on';
+            if (animSpeedSelect) animSpeedSelect.value = d.animSpeed || '1';
+        } catch (e) {}
+    }
+    applyGraphics();
+}
+
+// ===== ТЕМЫ =====
+const themes = {
+    default: { '--bg-primary': '#0d0d0d', '--bg-secondary': '#1a1a2e', '--bg-panel': 'rgba(22,33,62,0.88)',
+            '--border-color': '#0f3460', '--accent': '#4a9eff', '--accent2': '#6c5ce7', '--accent3': '#00d2d3',
+            '--text-primary': '#e0e0e0', '--text-secondary': '#c8c8c8', '--text-muted': '#888',
+            '--card-bg': 'rgba(15,52,96,0.25)', '--card-border': '#1a3a6a' },
+    red: { '--bg-primary': '#1a0a0a', '--bg-secondary': '#2e1a1a', '--bg-panel': 'rgba(62,22,22,0.88)',
+            '--border-color': '#600f0f', '--accent': '#ff4a4a', '--accent2': '#e75c5c', '--accent3': '#d30000',
+            '--text-primary': '#f0d0d0', '--text-secondary': '#d0b0b0', '--text-muted': '#a07070',
+            '--card-bg': 'rgba(96,15,15,0.25)', '--card-border': '#6a1a1a' },
+    green: { '--bg-primary': '#0a1a0a', '--bg-secondary': '#1a2e1a', '--bg-panel': 'rgba(22,62,22,0.88)',
+            '--border-color': '#0f600f', '--accent': '#4aff4a', '--accent2': '#5ce75c', '--accent3': '#00d300',
+            '--text-primary': '#d0f0d0', '--text-secondary': '#b0d0b0', '--text-muted': '#70a070',
+            '--card-bg': 'rgba(15,96,15,0.25)', '--card-border': '#1a6a1a' },
+    purple: { '--bg-primary': '#0d0a1a', '--bg-secondary': '#1e1a2e', '--bg-panel': 'rgba(33,22,62,0.88)',
+            '--border-color': '#2f0f60', '--accent': '#b04aff', '--accent2': '#8c5ce7', '--accent3': '#6a00d3',
+            '--text-primary': '#e0d0f0', '--text-secondary': '#c8b0d0', '--text-muted': '#8870a0',
+            '--card-bg': 'rgba(47,15,96,0.25)', '--card-border': '#3a1a6a' },
+    orange: { '--bg-primary': '#1a120a', '--bg-secondary': '#2e221a', '--bg-panel': 'rgba(62,42,22,0.88)',
+            '--border-color': '#60300f', '--accent': '#ff8c4a', '--accent2': '#e77c5c', '--accent3': '#d35a00',
+            '--text-primary': '#f0e0d0', '--text-secondary': '#d0c0b0', '--text-muted': '#a09070',
+            '--card-bg': 'rgba(96,48,15,0.25)', '--card-border': '#6a3a1a' }
+};
+
+function applyTheme(name) {
+    const t = themes[name] || themes.default;
+    const root = document.documentElement;
+    for (const [k, v] of Object.entries(t)) { root.style.setProperty(k, v); }
+    localStorage.setItem('yuniTheme', name);
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('yuniTheme');
+    const themeSelect = document.getElementById('themeSelect');
+    if (saved && themes[saved]) { 
+        if (themeSelect) themeSelect.value = saved; 
+        applyTheme(saved); 
+    } else { 
+        applyTheme('default'); 
+    }
+}
+
+// ===== ОБЩЕЕ =====
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// ===== МУЗЫКА =====
+const music = document.getElementById('bgMusic');
+if (music) {
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    if (volumeSlider) {
         const savedVol = localStorage.getItem('yuniVolume');
         if (savedVol !== null) {
             volumeSlider.value = savedVol;
             music.volume = savedVol / 100;
-            volumeValue.textContent = savedVol + '%';
+            if (volumeValue) volumeValue.textContent = savedVol + '%';
         } else { music.volume = 0.3; }
         volumeSlider.addEventListener('input', function() {
             const val = this.value;
             music.volume = val / 100;
-            volumeValue.textContent = val + '%';
+            if (volumeValue) volumeValue.textContent = val + '%';
             localStorage.setItem('yuniVolume', val);
         });
+    }
+}
 
-        // ===== ЯЗЫК =====
-        const langSelect = document.getElementById('langSelect');
-        const savedLang = localStorage.getItem('yuniLang');
-        if (savedLang) {
-            langSelect.value = savedLang;
-            if (savedLang === 'ru') document.body.classList.add('lang-ru');
-            else document.body.classList.add('lang-en');
-        } else { document.body.classList.add('lang-en'); }
-        langSelect.addEventListener('change', function() {
-            const lang = this.value;
-            if (lang === 'ru') { document.body.classList.remove('lang-en');
-                document.body.classList.add('lang-ru'); } else { document.body.classList.remove('lang-ru');
-                document.body.classList.add('lang-en'); }
-            localStorage.setItem('yuniLang', lang);
+// ===== ЯЗЫК =====
+const langSelect = document.getElementById('langSelect');
+if (langSelect) {
+    const savedLang = localStorage.getItem('yuniLang');
+    if (savedLang) {
+        langSelect.value = savedLang;
+        if (savedLang === 'ru') document.body.classList.add('lang-ru');
+        else document.body.classList.add('lang-en');
+    } else { document.body.classList.add('lang-en'); }
+    langSelect.addEventListener('change', function() {
+        const lang = this.value;
+        if (lang === 'ru') { document.body.classList.remove('lang-en'); document.body.classList.add('lang-ru'); } 
+        else { document.body.classList.remove('lang-ru'); document.body.classList.add('lang-en'); }
+        localStorage.setItem('yuniLang', lang);
+    });
+}
+
+// ===== ТАБЫ =====
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        const tabId = this.dataset.tab;
+        tabBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        tabContents.forEach(c => c.classList.remove('active'));
+        const target = document.getElementById(tabId);
+        if (target) target.classList.add('active');
+    });
+});
+
+// ===== НОВОСТИ =====
+function loadNews() { 
+    try {
+        return JSON.parse(localStorage.getItem('yuniNews') || '[]'); 
+    } catch (e) { return []; }
+}
+function saveNews(data) { localStorage.setItem('yuniNews', JSON.stringify(data)); }
+
+function renderNews() {
+    const data = loadNews();
+    const feed = document.getElementById('newsFeed');
+    if (!feed) return;
+    if (!data.length) {
+        feed.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:20px;"><span class="en">No news yet.</span><span class="ru">Новостей пока нет.</span></p>`;
+        return;
+    }
+    let html = '';
+    for (let i = data.length - 1; i >= 0; i--) {
+        const item = data[i];
+        const tags = item.tags || [];
+        let tagHtml = tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` : '';
+        let contentHtml = '';
+        if (tags.includes('video') && item.video) contentHtml += `<div class="video-wrapper"><iframe src="${item.video}" allowfullscreen></iframe></div>`;
+        if (tags.includes('photo') && item.photo) contentHtml += `<div class="photo"><img src="${item.photo}" alt="photo"></div>`;
+        if (tags.includes('file') && item.file) contentHtml += `<a href="#" class="file-link download-file" data-filename="${item.file}">📥 ${item.file}</a>`;
+        html += `
+            <div class="news-item">
+                ${tagHtml}
+                <h3>${item.title}</h3>
+                <span class="date">${item.date}</span>
+                <p>${item.text}</p>
+                ${contentHtml}
+            </div>
+        `;
+    }
+    feed.innerHTML = html;
+    document.querySelectorAll('.download-file').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            downloadTestFile(this.dataset.filename);
         });
+    });
+}
 
-        // ===== ТАБЫ =====
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabId = this.dataset.tab;
-                tabBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                tabContents.forEach(c => c.classList.remove('active'));
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-
-        // ===== НОВОСТИ =====
-        function loadNews() { return JSON.parse(localStorage.getItem('yuniNews') || '[]'); }
-
-        function saveNews(data) { localStorage.setItem('yuniNews', JSON.stringify(data)); }
-
-        function renderNews() {
-            const data = loadNews();
-            const feed = document.getElementById('newsFeed');
-            if (!data.length) {
-                feed.innerHTML =
-                    `<p style="color:var(--text-muted);text-align:center;padding:20px;"><span class="en">No news yet.</span><span class="ru">Новостей пока нет.</span></p>`;
-                return;
-            }
-            let html = '';
-            for (let i = data.length - 1; i >= 0; i--) {
-                const item = data[i];
-                const tags = item.tags || [];
-                let tagHtml = tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` :
-                    '';
-                let contentHtml = '';
-                if (tags.includes('video') && item.video) contentHtml +=
-                    `<div class="video-wrapper"><iframe src="${item.video}" allowfullscreen></iframe></div>`;
-                if (tags.includes('photo') && item.photo) contentHtml +=
-                    `<div class="photo"><img src="${item.photo}" alt="photo"></div>`;
-                if (tags.includes('file') && item.file) contentHtml +=
-                    `<a href="#" class="file-link download-file" data-filename="${item.file}">📥 ${item.file}</a>`;
-                html += `
-                    <div class="news-item">
-                        ${tagHtml}
-                        <h3>${item.title}</h3>
-                        <span class="date">${item.date}</span>
-                        <p>${item.text}</p>
-                        ${contentHtml}
-                    </div>
-                `;
-            }
-            feed.innerHTML = html;
-            document.querySelectorAll('.download-file').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    downloadTestFile(this.dataset.filename);
-                });
-            });
-        }
-
-        function renderAdminNews() {
-            const data = loadNews();
-            const list = document.getElementById('adminNewsList');
-            if (!data.length) {
-                list.innerHTML =
-                    `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No news.</span><span class="ru">Нет новостей.</span></p>`;
-                return;
-            }
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                html += `
-                    <div class="admin-news-item">
-                        <span class="title">${data[i].title}</span>
-                        <span style="color:var(--text-muted);font-size:12px;">${data[i].date}</span>
-                        <button class="del-btn" data-index="${i}">✕</button>
-                    </div>
-                `;
-            }
-            list.innerHTML = html;
-            list.querySelectorAll('.del-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const idx = parseInt(this.dataset.index);
-                    const d = loadNews();
-                    d.splice(idx, 1);
-                    saveNews(d);
-                    renderNews();
-                    renderAdminNews();
-                    showToast('News deleted');
-                });
-            });
-        }
-
-        document.getElementById('addNewsBtn').addEventListener('click', function() {
-            const title = document.getElementById('newsTitle').value.trim();
-            const text = document.getElementById('newsText').value.trim();
-            const video = document.getElementById('newsVideo').value.trim();
-            const photo = document.getElementById('newsPhoto').value.trim();
-            const file = document.getElementById('newsFile').value.trim();
-            const checkboxes = document.querySelectorAll('.tag-checkbox:checked');
-            const tags = Array.from(checkboxes).map(cb => cb.value);
-            if (!title || !text) { showToast('Title and text required!'); return; }
-            if (tags.includes('video') && !video) { showToast('Video URL required for #video'); return; }
-            if (tags.includes('photo') && !photo) { showToast('Photo URL required for #photo'); return; }
-            if (tags.includes('file') && !file) { showToast('File name required for #file'); return; }
-            const data = loadNews();
-            data.push({
-                title,
-                text,
-                tags,
-                video: video || '',
-                photo: photo || '',
-                file: file || '',
-                date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' })
-            });
-            saveNews(data);
-            document.getElementById('newsTitle').value = '';
-            document.getElementById('newsText').value = '';
-            document.getElementById('newsVideo').value = '';
-            document.getElementById('newsPhoto').value = '';
-            document.getElementById('newsFile').value = '';
-            document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = false);
+function renderAdminNews() {
+    const data = loadNews();
+    const list = document.getElementById('adminNewsList');
+    if (!list) return;
+    if (!data.length) {
+        list.innerHTML = `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No news.</span><span class="ru">Нет новостей.</span></p>`;
+        return;
+    }
+    let html = '';
+    for (let i = 0; i < data.length; i++) {
+        html += `
+            <div class="admin-news-item">
+                <span class="title">${data[i].title}</span>
+                <span style="color:var(--text-muted);font-size:12px;">${data[i].date}</span>
+                <button class="del-btn" data-index="${i}">✕</button>
+            </div>
+        `;
+    }
+    list.innerHTML = html;
+    list.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.index);
+            const d = loadNews();
+            d.splice(idx, 1);
+            saveNews(d);
             renderNews();
             renderAdminNews();
-            showToast('News added! (save to GitHub to publish)');
+            showToast('News deleted');
         });
+    });
+}
 
-        document.getElementById('clearNewsBtn').addEventListener('click', function() {
-            if (confirm('Delete all news?')) { saveNews([]);
-                renderNews();
-                renderAdminNews();
-                showToast('All news cleared!'); }
+// ===== ДОБАВЛЕНИЕ НОВОСТИ =====
+const addNewsBtn = document.getElementById('addNewsBtn');
+if (addNewsBtn) {
+    addNewsBtn.addEventListener('click', function() {
+        const title = document.getElementById('newsTitle')?.value.trim() || '';
+        const text = document.getElementById('newsText')?.value.trim() || '';
+        const video = document.getElementById('newsVideo')?.value.trim() || '';
+        const photo = document.getElementById('newsPhoto')?.value.trim() || '';
+        const file = document.getElementById('newsFile')?.value.trim() || '';
+        const checkboxes = document.querySelectorAll('.tag-checkbox:checked');
+        const tags = Array.from(checkboxes).map(cb => cb.value);
+        if (!title || !text) { showToast('Title and text required!'); return; }
+        if (tags.includes('video') && !video) { showToast('Video URL required for #video'); return; }
+        if (tags.includes('photo') && !photo) { showToast('Photo URL required for #photo'); return; }
+        if (tags.includes('file') && !file) { showToast('File name required for #file'); return; }
+        const data = loadNews();
+        data.push({
+            title, text, tags,
+            video: video || '',
+            photo: photo || '',
+            file: file || '',
+            date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' })
         });
+        saveNews(data);
+        document.getElementById('newsTitle').value = '';
+        document.getElementById('newsText').value = '';
+        document.getElementById('newsVideo').value = '';
+        document.getElementById('newsPhoto').value = '';
+        document.getElementById('newsFile').value = '';
+        document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = false);
+        renderNews();
+        renderAdminNews();
+        showToast('News added! (save to GitHub to publish)');
+    });
+}
 
-        // ===== ИГРЫ =====
-        function loadGames() { return JSON.parse(localStorage.getItem('yuniGames') || '[]'); }
+const clearNewsBtn = document.getElementById('clearNewsBtn');
+if (clearNewsBtn) {
+    clearNewsBtn.addEventListener('click', function() {
+        if (confirm('Delete all news?')) { saveNews([]); renderNews(); renderAdminNews(); showToast('All news cleared!'); }
+    });
+}
 
-        function saveGames(data) { localStorage.setItem('yuniGames', JSON.stringify(data)); }
+// ===== ИГРЫ =====
+function loadGames() { 
+    try {
+        return JSON.parse(localStorage.getItem('yuniGames') || '[]'); 
+    } catch (e) { return []; }
+}
+function saveGames(data) { localStorage.setItem('yuniGames', JSON.stringify(data)); }
 
-        function renderGames() {
-            const data = loadGames();
-            const container = document.getElementById('gamesContainer');
-            if (!data.length) {
-                container.innerHTML =
-                    `<p style="color:var(--text-muted);text-align:center;padding:20px;"><span class="en">No games yet.</span><span class="ru">Игр пока нет.</span></p>`;
-                return;
-            }
-            let html = '';
-            data.forEach(g => {
-                const statusClass = g.status === 'released' ? 'released' : '';
-                const statusText = g.status === 'released' ? '✅ Released' : '🛠️ WIP';
-                html += `
-                    <div class="game-item">
-                        <img src="${g.icon || './images/default-icon.png'}" alt="${g.title}" class="game-icon">
-                        <h3>${g.title}</h3>
-                        <div class="version">${g.version || 'v1.0'}</div>
-                        <p>${g.desc || ''}</p>
-                        <span class="status ${statusClass}">${statusText}</span>
-                        <br>
-                        ${g.link ? `<a href="${g.link}" target="_blank" class="btn btn-small"><span class="en">Download</span><span class="ru">Скачать</span></a>` : `<a href="#" class="btn btn-small download-test" data-filename="${g.title.replace(/\s/g,'-')}.txt"><span class="en">More</span><span class="ru">Подробнее</span></a>`}
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            document.querySelectorAll('.download-test').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    downloadTestFile(this.dataset.filename);
-                });
-            });
-        }
+function renderGames() {
+    const data = loadGames();
+    const container = document.getElementById('gamesContainer');
+    if (!container) return;
+    if (!data.length) {
+        container.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:20px;"><span class="en">No games yet.</span><span class="ru">Игр пока нет.</span></p>`;
+        return;
+    }
+    let html = '';
+    data.forEach(g => {
+        const statusClass = g.status === 'released' ? 'released' : '';
+        const statusText = g.status === 'released' ? '✅ Released' : '🛠️ WIP';
+        html += `
+            <div class="game-item">
+                <img src="${g.icon || './images/default-icon.png'}" alt="${g.title}" class="game-icon">
+                <h3>${g.title}</h3>
+                <div class="version">${g.version || 'v1.0'}</div>
+                <p>${g.desc || ''}</p>
+                <span class="status ${statusClass}">${statusText}</span>
+                <br>
+                ${g.link ? `<a href="${g.link}" target="_blank" class="btn btn-small"><span class="en">Download</span><span class="ru">Скачать</span></a>` : `<a href="#" class="btn btn-small download-test" data-filename="${g.title.replace(/\s/g,'-')}.txt"><span class="en">More</span><span class="ru">Подробнее</span></a>`}
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+    document.querySelectorAll('.download-test').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.preventDefault();
+            downloadTestFile(this.dataset.filename);
+        });
+    });
+}
 
-        function renderAdminGames() {
-            const data = loadGames();
-            const list = document.getElementById('adminGamesList');
-            if (!data.length) {
-                list.innerHTML =
-                    `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No games.</span><span class="ru">Нет игр.</span></p>`;
-                return;
-            }
-            let html = '';
-            data.forEach((g, i) => {
-                html += `
-                    <div class="admin-game-item">
-                        <span class="title">${g.title}</span>
-                        <span class="version">${g.version || 'v1.0'}</span>
-                        <button class="del-btn" data-index="${i}">✕</button>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-            list.querySelectorAll('.del-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const idx = parseInt(this.dataset.index);
-                    const d = loadGames();
-                    d.splice(idx, 1);
-                    saveGames(d);
-                    renderGames();
-                    renderAdminGames();
-                    showToast('Game deleted');
-                });
-            });
-        }
-
-        document.getElementById('addGameBtn').addEventListener('click', function() {
-            const title = document.getElementById('gameTitle').value.trim();
-            const desc = document.getElementById('gameDesc').value.trim();
-            const version = document.getElementById('gameVersion').value.trim() || 'v1.0';
-            const icon = document.getElementById('gameIcon').value.trim();
-            const status = document.getElementById('gameStatus').value;
-            const link = document.getElementById('gameLink').value.trim();
-            if (!title) { showToast('Game title required!'); return; }
-            const data = loadGames();
-            const existing = data.findIndex(g => g.title === title);
-            const gameObj = { title, desc, version, icon, status, link };
-            if (existing >= 0) {
-                data[existing] = gameObj;
-                showToast('Game updated!');
-            } else {
-                data.push(gameObj);
-                showToast('Game added!');
-            }
-            saveGames(data);
-            document.getElementById('gameTitle').value = '';
-            document.getElementById('gameDesc').value = '';
-            document.getElementById('gameVersion').value = '';
-            document.getElementById('gameIcon').value = '';
-            document.getElementById('gameLink').value = '';
+function renderAdminGames() {
+    const data = loadGames();
+    const list = document.getElementById('adminGamesList');
+    if (!list) return;
+    if (!data.length) {
+        list.innerHTML = `<p style="color:var(--text-muted);font-size:13px;"><span class="en">No games.</span><span class="ru">Нет игр.</span></p>`;
+        return;
+    }
+    let html = '';
+    data.forEach((g, i) => {
+        html += `
+            <div class="admin-game-item">
+                <span class="title">${g.title}</span>
+                <span class="version">${g.version || 'v1.0'}</span>
+                <button class="del-btn" data-index="${i}">✕</button>
+            </div>
+        `;
+    });
+    list.innerHTML = html;
+    list.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.index);
+            const d = loadGames();
+            d.splice(idx, 1);
+            saveGames(d);
             renderGames();
             renderAdminGames();
-            showToast('Game saved! (save to GitHub to publish)');
+            showToast('Game deleted');
         });
+    });
+}
 
-        // ===== АДМИН-ЛОГИН =====
-        const adminLoginDiv = document.getElementById('adminLogin');
-        const adminPanelDiv = document.getElementById('adminPanel');
-        const adminErrorDiv = document.getElementById('adminError');
-
-        function grantAccess() {
-            adminLoginDiv.style.display = 'none';
-            adminPanelDiv.classList.add('active');
-            renderAdminNews();
-            renderAdminGames();
-            showToast('Access granted!');
+const addGameBtn = document.getElementById('addGameBtn');
+if (addGameBtn) {
+    addGameBtn.addEventListener('click', function() {
+        const title = document.getElementById('gameTitle')?.value.trim() || '';
+        const desc = document.getElementById('gameDesc')?.value.trim() || '';
+        const version = document.getElementById('gameVersion')?.value.trim() || 'v1.0';
+        const icon = document.getElementById('gameIcon')?.value.trim() || '';
+        const status = document.getElementById('gameStatus')?.value || 'wip';
+        const link = document.getElementById('gameLink')?.value.trim() || '';
+        if (!title) { showToast('Game title required!'); return; }
+        const data = loadGames();
+        const existing = data.findIndex(g => g.title === title);
+        const gameObj = { title, desc, version, icon, status, link };
+        if (existing >= 0) {
+            data[existing] = gameObj;
+            showToast('Game updated!');
+        } else {
+            data.push(gameObj);
+            showToast('Game added!');
         }
+        saveGames(data);
+        document.getElementById('gameTitle').value = '';
+        document.getElementById('gameDesc').value = '';
+        document.getElementById('gameVersion').value = '';
+        document.getElementById('gameIcon').value = '';
+        document.getElementById('gameLink').value = '';
+        renderGames();
+        renderAdminGames();
+        showToast('Game saved! (save to GitHub to publish)');
+    });
+}
 
-        document.getElementById('adminLoginBtn').addEventListener('click', function() {
-            const pass = document.getElementById('adminPassword').value;
-            const code = document.getElementById('adminCode').value;
-            if (pass === '99' && code === 'LiveCoockesBaldi99') {
-                grantAccess();
-            } else {
+// ===== АДМИН-ЛОГИН =====
+const adminLoginDiv = document.getElementById('adminLogin');
+const adminPanelDiv = document.getElementById('adminPanel');
+const adminErrorDiv = document.getElementById('adminError');
+const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+if (adminLoginBtn) {
+    adminLoginBtn.addEventListener('click', function() {
+        const pass = document.getElementById('adminPassword')?.value || '';
+        const code = document.getElementById('adminCode')?.value || '';
+        if (pass === '99' && code === 'LiveCoockesBaldi99') {
+            grantAccess();
+        } else {
+            if (adminErrorDiv) {
                 adminErrorDiv.style.display = 'block';
                 setTimeout(() => { adminErrorDiv.style.display = 'none'; }, 3000);
             }
-        });
-
-        const adminDropZone = document.getElementById('adminDropZone');
-        const adminFileInput = document.getElementById('adminFileInput');
-        adminDropZone.addEventListener('click', () => adminFileInput.click());
-        adminDropZone.addEventListener('dragover', (e) => { e.preventDefault();
-            adminDropZone.classList.add('dragover'); });
-        adminDropZone.addEventListener('dragleave', () => adminDropZone.classList.remove('dragover'));
-        adminDropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            adminDropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length) handleAdminFile(e.dataTransfer.files[0]);
-        });
-        adminFileInput.addEventListener('change', function() {
-            if (this.files.length) handleAdminFile(this.files[0]);
-            this.value = '';
-        });
-
-        function handleAdminFile(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result.trim();
-                if (content === 'LiveCoockesBaldi99') {
-                    grantAccess();
-                } else {
-                    adminErrorDiv.style.display = 'block';
-                    setTimeout(() => { adminErrorDiv.style.display = 'none'; }, 3000);
-                    showToast('Invalid code in file!');
-                }
-            };
-            reader.readAsText(file);
         }
+    });
+}
 
-        // ===== ЗАГРУЗКА СКРИПТА =====
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault();
-            dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length) handleScriptFile(e.dataTransfer.files[0]);
-        });
-        fileInput.addEventListener('change', function() {
-            if (this.files.length) handleScriptFile(this.files[0]);
-            this.value = '';
-        });
+function grantAccess() {
+    if (adminLoginDiv) adminLoginDiv.style.display = 'none';
+    if (adminPanelDiv) adminPanelDiv.classList.add('active');
+    renderAdminNews();
+    renderAdminGames();
+    showToast('Access granted!');
+}
 
-        function handleScriptFile(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const code = e.target.result;
-                    const script = document.createElement('script');
-                    script.textContent = code;
-                    document.head.appendChild(script);
-                    showToast('Script loaded!');
-                } catch (err) { showToast('Error: ' + err.message); }
-            };
-            reader.readAsText(file);
+// ===== АДМИН ФАЙЛ =====
+const adminDropZone = document.getElementById('adminDropZone');
+const adminFileInput = document.getElementById('adminFileInput');
+if (adminDropZone) {
+    adminDropZone.addEventListener('click', () => adminFileInput?.click());
+    adminDropZone.addEventListener('dragover', (e) => { e.preventDefault(); adminDropZone.classList.add('dragover'); });
+    adminDropZone.addEventListener('dragleave', () => adminDropZone.classList.remove('dragover'));
+    adminDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        adminDropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleAdminFile(e.dataTransfer.files[0]);
+    });
+}
+if (adminFileInput) {
+    adminFileInput.addEventListener('change', function() {
+        if (this.files.length) handleAdminFile(this.files[0]);
+        this.value = '';
+    });
+}
+
+function handleAdminFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result.trim();
+        if (content === 'LiveCoockesBaldi99') {
+            grantAccess();
+        } else {
+            if (adminErrorDiv) {
+                adminErrorDiv.style.display = 'block';
+                setTimeout(() => { adminErrorDiv.style.display = 'none'; }, 3000);
+            }
+            showToast('Invalid code in file!');
         }
+    };
+    reader.readAsText(file);
+}
 
-        // ===== GITHUB: ЗАГРУЗКА С ТАЙМАУТОМ =====
-        async function loadDataFromGitHub() {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
-                const url = GITHUB_API + '?t=' + Date.now();
-                const response = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        console.warn('data.json not found');
-                        return null;
-                    }
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                const data = await response.json();
-                const content = atob(data.content);
-                return JSON.parse(content);
-            } catch (e) {
-                if (e.name === 'AbortError') {
-                    console.warn('GitHub load timeout (3s) — using local data');
-                } else {
-                    console.warn('Failed to load data.json:', e);
-                }
+// ===== ЗАГРУЗКА СКРИПТА =====
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+if (dropZone) {
+    dropZone.addEventListener('click', () => fileInput?.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleScriptFile(e.dataTransfer.files[0]);
+    });
+}
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        if (this.files.length) handleScriptFile(this.files[0]);
+        this.value = '';
+    });
+}
+
+function handleScriptFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const code = e.target.result;
+            const script = document.createElement('script');
+            script.textContent = code;
+            document.head.appendChild(script);
+            showToast('Script loaded!');
+        } catch (err) { showToast('Error: ' + err.message); }
+    };
+    reader.readAsText(file);
+}
+
+// ===== GITHUB =====
+async function loadDataFromGitHub() {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const url = GITHUB_API + '?t=' + Date.now();
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.warn('data.json not found');
                 return null;
             }
+            throw new Error(`HTTP ${response.status}`);
         }
-
-        // ===== ЗАГРУЗКА ДАННЫХ ПРИ ОТКРЫТИИ =====
-        async function loadDataOnStart() {
-            try {
-                const remoteData = await loadDataFromGitHub();
-                if (remoteData) {
-                    if (remoteData.news) saveNews(remoteData.news);
-                    if (remoteData.games) saveGames(remoteData.games);
-                    return true;
-                }
-                return false;
-            } catch (e) {
-                console.warn('Error loading data:', e);
-                return false;
-            }
+        const data = await response.json();
+        const content = atob(data.content);
+        return JSON.parse(content);
+    } catch (e) {
+        if (e.name === 'AbortError') {
+            console.warn('GitHub load timeout (3s)');
+        } else {
+            console.warn('Failed to load data.json:', e);
         }
+        return null;
+    }
+}
 
-        // ===== СОХРАНЕНИЕ НА GITHUB =====
-        async function saveDataToGitHub(data) {
-            const token = document.getElementById('githubToken').value.trim();
-            if (!token) { showToast('Enter GitHub token!'); return; }
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = '⏳ Saving...';
-            statusEl.style.color = 'var(--text-muted)';
-            try {
-                let sha = null;
-                let getResponse = await fetch(GITHUB_API, {
-                    headers: { 'Authorization': `token ${token}` }
-                });
-                if (getResponse.ok) {
-                    const fileData = await getResponse.json();
-                    sha = fileData.sha;
-                } else if (getResponse.status !== 404) {
-                    throw new Error('Failed to get file info: ' + getResponse.status);
-                }
-                const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-                const payload = {
-                    message: 'Update data from YuniStore',
-                    content: content,
-                    branch: 'main'
-                };
-                if (sha) payload.sha = sha;
-                const putResponse = await fetch(GITHUB_API, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                if (!putResponse.ok) {
-                    const err = await putResponse.json();
-                    throw new Error(err.message || 'Unknown error');
-                }
-                statusEl.textContent = '✅ Saved!';
-                statusEl.style.color = '#4CFF00';
-                showToast('Data saved to GitHub!');
-                localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
-                localStorage.setItem('yuniGames', JSON.stringify(data.games || []));
-                renderNews();
-                renderGames();
-            } catch (e) {
-                statusEl.textContent = '❌ Error: ' + e.message;
-                statusEl.style.color = '#ff6b6b';
-                showToast('Save error: ' + e.message);
-            }
+async function loadDataOnStart() {
+    try {
+        const remoteData = await loadDataFromGitHub();
+        if (remoteData) {
+            if (remoteData.news) saveNews(remoteData.news);
+            if (remoteData.games) saveGames(remoteData.games);
+            return true;
         }
+        return false;
+    } catch (e) {
+        console.warn('Error loading data:', e);
+        return false;
+    }
+}
 
-        // ===== КНОПКИ =====
-        document.getElementById('saveToGitHubBtn').addEventListener('click', function() {
-            const news = loadNews();
-            const games = loadGames();
-            const data = { news, games };
-            saveDataToGitHub(data);
+async function saveDataToGitHub(data) {
+    const token = document.getElementById('githubToken')?.value.trim() || '';
+    if (!token) { showToast('Enter GitHub token!'); return; }
+    const statusEl = document.getElementById('saveStatus');
+    if (statusEl) {
+        statusEl.textContent = '⏳ Saving...';
+        statusEl.style.color = 'var(--text-muted)';
+    }
+    try {
+        let sha = null;
+        let getResponse = await fetch(GITHUB_API, {
+            headers: { 'Authorization': `token ${token}` }
         });
+        if (getResponse.ok) {
+            const fileData = await getResponse.json();
+            sha = fileData.sha;
+        } else if (getResponse.status !== 404) {
+            throw new Error('Failed to get file info: ' + getResponse.status);
+        }
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+        const payload = {
+            message: 'Update data from YuniStore',
+            content: content,
+            branch: 'main'
+        };
+        if (sha) payload.sha = sha;
+        const putResponse = await fetch(GITHUB_API, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+        if (!putResponse.ok) {
+            const err = await putResponse.json();
+            throw new Error(err.message || 'Unknown error');
+        }
+        if (statusEl) {
+            statusEl.textContent = '✅ Saved!';
+            statusEl.style.color = '#4CFF00';
+        }
+        showToast('Data saved to GitHub!');
+        localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
+        localStorage.setItem('yuniGames', JSON.stringify(data.games || []));
+        renderNews();
+        renderGames();
+    } catch (e) {
+        if (statusEl) {
+            statusEl.textContent = '❌ Error: ' + e.message;
+            statusEl.style.color = '#ff6b6b';
+        }
+        showToast('Save error: ' + e.message);
+    }
+}
 
-        document.getElementById('reloadFromGitHubBtn').addEventListener('click', async function() {
-            const statusEl = document.getElementById('saveStatus');
+const saveBtn = document.getElementById('saveToGitHubBtn');
+if (saveBtn) {
+    saveBtn.addEventListener('click', function() {
+        const news = loadNews();
+        const games = loadGames();
+        const data = { news, games };
+        saveDataToGitHub(data);
+    });
+}
+
+const reloadBtn = document.getElementById('reloadFromGitHubBtn');
+if (reloadBtn) {
+    reloadBtn.addEventListener('click', async function() {
+        const statusEl = document.getElementById('saveStatus');
+        if (statusEl) {
             statusEl.textContent = '⏳ Loading...';
             statusEl.style.color = 'var(--text-muted)';
-            const remoteData = await loadDataFromGitHub();
-            if (remoteData) {
-                if (remoteData.news) saveNews(remoteData.news);
-                if (remoteData.games) saveGames(remoteData.games);
-                renderNews();
-                renderGames();
-                statusEl.textContent = '✅ Reloaded!';
-                statusEl.style.color = '#4CFF00';
-                showToast('Data reloaded from GitHub!');
-            } else {
-                statusEl.textContent = '❌ No data on GitHub';
-                statusEl.style.color = '#ff6b6b';
-                showToast('No data.json found on GitHub');
-            }
-        });
-
-        // ===== СКАЧИВАНИЕ ТЕСТОВЫХ ФАЙЛОВ =====
-        function downloadTestFile(filename) {
-            const words = ['Hello', 'World', 'YuniStore', 'Baldi', 'Universe', 'Yunin', 'Game', 'Mod', 'Developer',
-                'Creative',
-                'Pixel', 'Retro', 'School', 'Horror', 'Mystery', 'Adventure', 'Fun', 'Cool', 'Amazing', 'Awesome',
-                'Great', 'Wonderful', 'Fantastic', 'Super', 'Mega', 'Ultra', 'Epic', 'Legendary', 'Masterpiece'
-            ];
-            let content = '=== YuniStore Test File ===\n';
-            content += 'Filename: ' + filename + '\n';
-            content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
-            for (let i = 0; i < 30; i++) {
-                const w1 = words[Math.floor(Math.random() * words.length)];
-                const w2 = words[Math.floor(Math.random() * words.length)];
-                const w3 = words[Math.floor(Math.random() * words.length)];
-                content += `  ${i+1}. ${w1} ${w2} ${w3}\n`;
-            }
-            content += '\n=== End of file ===\n';
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename || 'test-file.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('Downloaded: ' + a.download);
         }
-
-        // ===== ЗАПУСК МУЗЫКИ =====
-        document.addEventListener('click', function() {
-            if (music.paused) music.play().catch(e => {});
-        });
-
-        // ===== ИНИЦИАЛИЗАЦИЯ (БЫСТРАЯ) =====
-        async function init() {
-            loadTheme();
-            loadGraphicsSettings();
-
-            document.getElementById('themeSelect').addEventListener('change', function() { applyTheme(this.value); });
-            document.getElementById('graphicsSelect').addEventListener('change', applyGraphics);
-            document.getElementById('particlesSelect').addEventListener('change', applyGraphics);
-            document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
-
-            // --- 1. Сначала показываем локальные данные (мгновенно) ---
-            if (!loadNews().length) {
-                const defaultNews = [{
-                    title: 'YuniStore is live! / YuniStore запущен!',
-                    text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
-                    tags: ['news', 'video'],
-                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                    photo: '',
-                    file: '',
-                    date: '22 августа 2026'
-                }, {
-                    title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
-                    text: 'Check out the new trailer! / Посмотри новый трейлер!',
-                    tags: ['video', 'update'],
-                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                    photo: '',
-                    file: '',
-                    date: '20 августа 2026'
-                }, {
-                    title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
-                    text: 'Download the latest version. / Скачай последнюю версию.',
-                    tags: ['file', 'update'],
-                    video: '',
-                    photo: '',
-                    file: 'yunin-school-legacy-v2.1.zip',
-                    date: '15 августа 2026'
-                }];
-                saveNews(defaultNews);
-            }
-            if (!loadGames().length) {
-                const defaultGames = [{
-                    title: 'Universe Yunin',
-                    desc: 'New universe, new hero, mysterious school.',
-                    version: 'v0.5',
-                    icon: './images/universe-icon.png',
-                    status: 'wip',
-                    link: ''
-                }, {
-                    title: 'Yunin School Legacy',
-                    desc: 'Classic Baldi\'s Basics style game.',
-                    version: 'v2.1',
-                    icon: './images/legacy-icon.png',
-                    status: 'released',
-                    link: ''
-                }];
-                saveGames(defaultGames);
-            }
-
+        const remoteData = await loadDataFromGitHub();
+        if (remoteData) {
+            if (remoteData.news) saveNews(remoteData.news);
+            if (remoteData.games) saveGames(remoteData.games);
             renderNews();
             renderGames();
-
-            // --- 2. В фоне пытаемся загрузить с GitHub ---
-            try {
-                const hasRemote = await loadDataOnStart();
-                if (hasRemote) {
-                    renderNews();
-                    renderGames();
-                    showToast('Data updated from GitHub');
-                }
-            } catch (e) {}
-
-            // --- 3. Токен ---
-            const savedToken = localStorage.getItem('githubToken');
-            if (savedToken) {
-                document.getElementById('githubToken').value = savedToken;
+            if (statusEl) {
+                statusEl.textContent = '✅ Reloaded!';
+                statusEl.style.color = '#4CFF00';
             }
-            document.getElementById('githubToken').addEventListener('change', function() {
-                if (this.value.trim()) {
-                    localStorage.setItem('githubToken', this.value.trim());
-                }
-            });
-
-            console.log('✅ YuniStore loaded!');
-            console.log('🔑 Password: 99, Code: LiveCoockesBaldi99');
-            console.log('🌐 Data auto-sync with GitHub (3s timeout)');
+            showToast('Data reloaded from GitHub!');
+        } else {
+            if (statusEl) {
+                statusEl.textContent = '❌ No data on GitHub';
+                statusEl.style.color = '#ff6b6b';
+            }
+            showToast('No data.json found on GitHub');
         }
+    });
+}
 
-        // Запускаем
-        init();
+// ===== СКАЧИВАНИЕ ТЕСТОВЫХ ФАЙЛОВ =====
+function downloadTestFile(filename) {
+    const words = ['Hello', 'World', 'YuniStore', 'Baldi', 'Universe', 'Yunin', 'Game', 'Mod', 'Developer',
+        'Creative', 'Pixel', 'Retro', 'School', 'Horror', 'Mystery', 'Adventure', 'Fun', 'Cool', 'Amazing', 'Awesome',
+        'Great', 'Wonderful', 'Fantastic', 'Super', 'Mega', 'Ultra', 'Epic', 'Legendary', 'Masterpiece'
+    ];
+    let content = '=== YuniStore Test File ===\n';
+    content += 'Filename: ' + filename + '\n';
+    content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
+    for (let i = 0; i < 30; i++) {
+        const w1 = words[Math.floor(Math.random() * words.length)];
+        const w2 = words[Math.floor(Math.random() * words.length)];
+        const w3 = words[Math.floor(Math.random() * words.length)];
+        content += `  ${i+1}. ${w1} ${w2} ${w3}\n`;
+    }
+    content += '\n=== End of file ===\n';
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'test-file.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Downloaded: ' + a.download);
+}
+
+// ===== ЗАПУСК МУЗЫКИ =====
+document.addEventListener('click', function() {
+    if (music && music.paused) music.play().catch(e => {});
+});
+
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+async function init() {
+    loadTheme();
+    
+    // Ждём загрузки DOM
+    await new Promise(resolve => {
+        if (document.readyState === 'complete') {
+            resolve();
+        } else {
+            window.addEventListener('load', resolve);
+        }
+    });
+
+    // Теперь можно безопасно применять графику
+    loadGraphicsSettings();
+
+    // Подписываемся на изменения
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function() { applyTheme(this.value); });
+    }
+    const graphicsSelect = document.getElementById('graphicsSelect');
+    if (graphicsSelect) {
+        graphicsSelect.addEventListener('change', applyGraphics);
+    }
+    const particlesSelect = document.getElementById('particlesSelect');
+    if (particlesSelect) {
+        particlesSelect.addEventListener('change', applyGraphics);
+    }
+    const animSpeedSelect = document.getElementById('animSpeedSelect');
+    if (animSpeedSelect) {
+        animSpeedSelect.addEventListener('change', applyGraphics);
+    }
+
+    // --- 1. Сначала показываем локальные данные ---
+    if (!loadNews().length) {
+        const defaultNews = [{
+            title: 'YuniStore is live! / YuniStore запущен!',
+            text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
+            tags: ['news', 'video'],
+            video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            photo: '',
+            file: '',
+            date: '22 августа 2026'
+        }, {
+            title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
+            text: 'Check out the new trailer! / Посмотри новый трейлер!',
+            tags: ['video', 'update'],
+            video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            photo: '',
+            file: '',
+            date: '20 августа 2026'
+        }, {
+            title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
+            text: 'Download the latest version. / Скачай последнюю версию.',
+            tags: ['file', 'update'],
+            video: '',
+            photo: '',
+            file: 'yunin-school-legacy-v2.1.zip',
+            date: '15 августа 2026'
+        }];
+        saveNews(defaultNews);
+    }
+    if (!loadGames().length) {
+        const defaultGames = [{
+            title: 'Universe Yunin',
+            desc: 'New universe, new hero, mysterious school.',
+            version: 'v0.5',
+            icon: './images/universe-icon.png',
+            status: 'wip',
+            link: ''
+        }, {
+            title: 'Yunin School Legacy',
+            desc: 'Classic Baldi\'s Basics style game.',
+            version: 'v2.1',
+            icon: './images/legacy-icon.png',
+            status: 'released',
+            link: ''
+        }];
+        saveGames(defaultGames);
+    }
+
+    renderNews();
+    renderGames();
+
+    // --- 2. В фоне пытаемся загрузить с GitHub ---
+    try {
+        const hasRemote = await loadDataOnStart();
+        if (hasRemote) {
+            renderNews();
+            renderGames();
+            showToast('Data updated from GitHub');
+        }
+    } catch (e) {}
+
+    // --- 3. Токен ---
+    const savedToken = localStorage.getItem('githubToken');
+    const tokenInput = document.getElementById('githubToken');
+    if (savedToken && tokenInput) {
+        tokenInput.value = savedToken;
+    }
+    if (tokenInput) {
+        tokenInput.addEventListener('change', function() {
+            if (this.value.trim()) {
+                localStorage.setItem('githubToken', this.value.trim());
+            }
+        });
+    }
+
+    console.log('✅ YuniStore loaded!');
+    console.log('🔑 Password: 99, Code: LiveCoockesBaldi99');
+    console.log('🌐 Data auto-sync with GitHub (3s timeout)');
+}
+
+// Запускаем
+init();
     </script>
 </body>
 </html>
