@@ -1,5 +1,15 @@
 {
-  "news": [],
+  "news": [
+    {
+      "title": "Тест Новостей",
+      "text": "вава",
+      "tags": [],
+      "video": "",
+      "photo": "",
+      "file": "тЕСТ",
+      "date": "23 августа 2026 г."
+    }
+  ],
   "games": [
     {
       "title": "Yunin's School Legacy",
