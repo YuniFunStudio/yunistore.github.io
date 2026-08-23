@@ -6,6 +6,7 @@
     <title>YuniStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
+        /* ===== ВСЕ ТЕ ЖЕ СТИЛИ, ЧТО И РАНЬШЕ ===== */
         :root {
             --bg-primary: #0d0d0d;
             --bg-secondary: #1a1a2e;
@@ -578,6 +579,29 @@
             max-width: 90%;
         }
 
+        /* ===== ИНДИКАТОР ЗАГРУЗКИ ===== */
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+        .loading-indicator .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--bg-secondary);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             header .logo { width: 70%; }
             .tab-btn { font-size: 13px; padding: 6px 10px; }
@@ -663,7 +687,11 @@
                 <div class="pixel-corner pixel-corner-bl"></div>
                 <div class="pixel-corner pixel-corner-br"></div>
                 <h2><span class="en">📰 Latest News</span><span class="ru">📰 Последние новости</span></h2>
-                <div id="newsFeed"></div>
+                <div id="newsFeed">
+                    <div class="loading-indicator">
+                        <span class="spinner"></span> <span class="en">Loading news...</span><span class="ru">Загрузка новостей...</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -677,7 +705,11 @@
                 <p style="font-size:14px;color:var(--text-muted);margin-bottom:14px;">
                     <span class="en">All games are free. Download and play!</span><span class="ru">Все игры бесплатны. Скачивай и играй!</span>
                 </p>
-                <div id="gamesContainer" class="game-grid"></div>
+                <div id="gamesContainer">
+                    <div class="loading-indicator">
+                        <span class="spinner"></span> <span class="en">Loading games...</span><span class="ru">Загрузка игр...</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -785,7 +817,6 @@
                 </div>
 
                 <div id="adminPanel" class="admin-panel">
-                    <!-- ===== СОХРАНЕНИЕ НА GITHUB ===== -->
                     <div class="github-save-area">
                         <h3 style="color:var(--accent);font-size:18px;margin-bottom:10px;">💾 Save to GitHub</h3>
                         <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">
@@ -796,15 +827,14 @@
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                             <button class="btn btn-small" id="saveToGitHubBtn">💾 <span class="en">Save to GitHub</span><span class="ru">Сохранить на GitHub</span></button>
                             <span class="github-status" id="saveStatus"></span>
-                            <button class="btn btn-small" id="loadFromGitHubBtn" style="background:#1a3a6a;">📥 <span class="en">Reload from GitHub</span><span class="ru">Обновить с GitHub</span></button>
                         </div>
                         <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
                             <span class="en">Token needed only for saving. File: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
                             <span class="ru">Токен нужен только для сохранения. Файл: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
                         </div>
+                        <button class="btn btn-small" id="reloadFromGitHubBtn" style="margin-top:8px;background:#1a3a6a;">🔄 <span class="en">Reload Data from GitHub</span><span class="ru">Обновить данные с GitHub</span></button>
                     </div>
 
-                    <!-- Загрузка скрипта -->
                     <div style="margin-bottom:20px;">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">📂 Load Script from File</span><span class="ru">📂 Загрузить скрипт из файла</span></h3>
                         <div class="drop-zone" id="dropZone">
@@ -813,7 +843,6 @@
                         </div>
                     </div>
 
-                    <!-- Новости -->
                     <div class="admin-form">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">➕ Add News</span><span class="ru">➕ Добавить новость</span></h3>
                         <label><span class="en">Title</span><span class="ru">Заголовок</span></label>
@@ -845,7 +874,6 @@
                         <div id="adminNewsList" class="admin-news-list"></div>
                     </div>
 
-                    <!-- Игры -->
                     <div style="margin-top:20px;border-top:1px solid var(--border-color);padding-top:16px;">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">🎮 Manage Games</span><span class="ru">🎮 Управление играми</span></h3>
                         <div class="admin-form">
@@ -891,14 +919,17 @@
 
     <script>
         // ============================================================
-        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ С GITHUB
+        //  YUNISTORE — АВТООБНОВЛЕНИЕ С GITHUB
         // ============================================================
 
-        // ===== КОНСТАНТЫ =====
         const REPO_OWNER = 'YuniFunStudio';
         const REPO_NAME = 'yunistore.github.io';
         const DATA_FILE = 'data.json';
         const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
+
+        // ===== ПЕРЕМЕННЫЕ ДЛЯ ОЧЕРЕДИ ОБНОВЛЕНИЙ =====
+        let updateQueue = [];
+        let isUpdating = false;
 
         // ===== ОПТИМИЗАЦИЯ =====
         function detectPerformance() {
@@ -1031,7 +1062,7 @@
             });
         });
 
-        // ===== НОВОСТИ (LOCAL STORAGE) =====
+        // ===== НОВОСТИ =====
         function loadNews() { return JSON.parse(localStorage.getItem('yuniNews') || '[]'); }
 
         function saveNews(data) { localStorage.setItem('yuniNews', JSON.stringify(data)); }
@@ -1139,7 +1170,7 @@
             document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = false);
             renderNews();
             renderAdminNews();
-            showToast('News added!');
+            showToast('News added! (save to GitHub to publish)');
         });
 
         document.getElementById('clearNewsBtn').addEventListener('click', function() {
@@ -1245,6 +1276,7 @@
             document.getElementById('gameLink').value = '';
             renderGames();
             renderAdminGames();
+            showToast('Game saved! (save to GitHub to publish)');
         });
 
         // ===== АДМИН-ЛОГИН =====
@@ -1333,26 +1365,72 @@
             reader.readAsText(file);
         }
 
-        // ===== GITHUB: ЗАГРУЗКА ДАННЫХ =====
-        async function loadDataFromGitHub() {
+        // ===== GITHUB: ЗАГРУЗКА ДАННЫХ (С КЭШИРОВАНИЕМ) =====
+        let cachedData = null;
+
+        async function loadDataFromGitHub(force = false) {
+            if (cachedData && !force) return cachedData;
             try {
-                const response = await fetch(GITHUB_API);
+                // Добавляем случайный параметр для обхода кэша
+                const url = GITHUB_API + '?t=' + Date.now();
+                const response = await fetch(url);
                 if (!response.ok) {
                     if (response.status === 404) {
-                        console.warn('data.json not found, will be created on first save.');
+                        console.warn('data.json not found');
                         return null;
                     }
                     throw new Error(`HTTP ${response.status}`);
                 }
                 const data = await response.json();
                 const content = atob(data.content);
-                return JSON.parse(content);
+                const parsed = JSON.parse(content);
+                cachedData = parsed;
+                return parsed;
             } catch (e) {
                 console.warn('Failed to load data.json:', e);
                 return null;
             }
         }
 
+        // ===== ЗАГРУЗКА ДАННЫХ ПРИ ОТКРЫТИИ САЙТА =====
+        async function loadDataOnStart() {
+            try {
+                const remoteData = await loadDataFromGitHub();
+                if (remoteData) {
+                    if (remoteData.news) saveNews(remoteData.news);
+                    if (remoteData.games) saveGames(remoteData.games);
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.warn('Error loading data:', e);
+                return false;
+            }
+        }
+
+        // ===== КНОПКА ОБНОВЛЕНИЯ ДАННЫХ =====
+        document.getElementById('reloadFromGitHubBtn').addEventListener('click', async function() {
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.textContent = '⏳ Loading...';
+            statusEl.style.color = 'var(--text-muted)';
+            cachedData = null; // Сбрасываем кэш
+            const remoteData = await loadDataFromGitHub(true);
+            if (remoteData) {
+                if (remoteData.news) saveNews(remoteData.news);
+                if (remoteData.games) saveGames(remoteData.games);
+                renderNews();
+                renderGames();
+                statusEl.textContent = '✅ Reloaded!';
+                statusEl.style.color = '#4CFF00';
+                showToast('Data reloaded from GitHub!');
+            } else {
+                statusEl.textContent = '❌ No data on GitHub';
+                statusEl.style.color = '#ff6b6b';
+                showToast('No data.json found on GitHub');
+            }
+        });
+
+        // ===== СОХРАНЕНИЕ НА GITHUB =====
         async function saveDataToGitHub(data) {
             const token = document.getElementById('githubToken').value.trim();
             if (!token) {
@@ -1364,7 +1442,6 @@
             statusEl.style.color = 'var(--text-muted)';
 
             try {
-                // Сначала пытаемся получить информацию о файле (для SHA)
                 let sha = null;
                 let getResponse = await fetch(GITHUB_API, {
                     headers: { 'Authorization': `token ${token}` }
@@ -1400,6 +1477,7 @@
 
                 statusEl.textContent = '✅ Saved!';
                 statusEl.style.color = '#4CFF00';
+                cachedData = null; // Сбрасываем кэш
                 showToast('Data saved to GitHub!');
                 // Обновляем локальные данные
                 localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
@@ -1413,32 +1491,12 @@
             }
         }
 
-        // ===== КНОПКИ GITHUB =====
+        // ===== КНОПКА СОХРАНЕНИЯ =====
         document.getElementById('saveToGitHubBtn').addEventListener('click', function() {
             const news = loadNews();
             const games = loadGames();
             const data = { news, games };
             saveDataToGitHub(data);
-        });
-
-        document.getElementById('loadFromGitHubBtn').addEventListener('click', async function() {
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = '⏳ Loading...';
-            statusEl.style.color = 'var(--text-muted)';
-            const remoteData = await loadDataFromGitHub();
-            if (remoteData) {
-                if (remoteData.news) saveNews(remoteData.news);
-                if (remoteData.games) saveGames(remoteData.games);
-                renderNews();
-                renderGames();
-                statusEl.textContent = '✅ Loaded!';
-                statusEl.style.color = '#4CFF00';
-                showToast('Data loaded from GitHub!');
-            } else {
-                statusEl.textContent = '❌ No data on GitHub';
-                statusEl.style.color = '#ff6b6b';
-                showToast('No data.json found on GitHub');
-            }
         });
 
         // ===== СКАЧИВАНИЕ ТЕСТОВЫХ ФАЙЛОВ =====
@@ -1485,14 +1543,11 @@
             document.getElementById('particlesSelect').addEventListener('change', applyGraphics);
             document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
 
-            // Загружаем данные с GitHub
-            const remoteData = await loadDataFromGitHub();
-            if (remoteData) {
-                if (remoteData.news) saveNews(remoteData.news);
-                if (remoteData.games) saveGames(remoteData.games);
-                showToast('Data loaded from GitHub!');
-            } else {
-                // Стартовые данные, если ничего нет
+            // Загружаем данные с GitHub ПРИ КАЖДОМ ОТКРЫТИИ САЙТА
+            const hasRemote = await loadDataOnStart();
+
+            // Если на GitHub нет данных — используем стартовые
+            if (!hasRemote) {
                 if (!loadNews().length) {
                     const defaultNews = [{
                         title: 'YuniStore is live! / YuniStore запущен!',
@@ -1550,7 +1605,6 @@
                 document.getElementById('githubToken').value = savedToken;
             }
 
-            // Сохраняем токен при вводе
             document.getElementById('githubToken').addEventListener('change', function() {
                 if (this.value.trim()) {
                     localStorage.setItem('githubToken', this.value.trim());
@@ -1559,7 +1613,7 @@
 
             console.log('YuniStore loaded!');
             console.log('Password: 99, Code: LiveCoockesBaldi99');
-            console.log('GitHub file: data.json will be created automatically on first save.');
+            console.log('Data auto-loaded from GitHub on every visit!');
         }
 
         init();
