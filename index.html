@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         /* ================================================================
-           СТИЛИ (ОПТИМИЗИРОВАНЫ, БЕЗ ИЗМЕНЕНИЙ)
+           СТИЛИ (БЕЗ ИЗМЕНЕНИЙ)
            ================================================================ */
         :root {
             --bg-primary: #0d0d0d;
@@ -910,15 +910,11 @@
 
     <div id="toast" class="toast"></div>
 
-    <!-- ============================================================= -->
-    <!--  СКРИПТ (ОБНОВЛЁННЫЙ, С ТАЙМАУТОМ И МГНОВЕННЫМ ЗАПУСКОМ)   -->
-    <!-- ============================================================= -->
     <script>
         // ============================================================
-        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ С БЫСТРОЙ ЗАГРУЗКОЙ
+        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ (ДАТА ИСПРАВЛЕНА)
         // ============================================================
 
-        // ===== КОНСТАНТЫ =====
         const REPO_OWNER = 'YuniFunStudio';
         const REPO_NAME = 'yunistore.github.io';
         const DATA_FILE = 'data.json';
@@ -1526,7 +1522,6 @@
             document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
 
             // --- 1. Сначала показываем локальные данные (мгновенно) ---
-            // если локальных данных нет — ставим стартовые
             if (!loadNews().length) {
                 const defaultNews = [{
                     title: 'YuniStore is live! / YuniStore запущен!',
@@ -1577,7 +1572,7 @@
             renderNews();
             renderGames();
 
-            // --- 2. В фоне пытаемся загрузить с GitHub (3 сек таймаут) ---
+            // --- 2. В фоне пытаемся загрузить с GitHub ---
             try {
                 const hasRemote = await loadDataOnStart();
                 if (hasRemote) {
@@ -1585,9 +1580,7 @@
                     renderGames();
                     showToast('Data updated from GitHub');
                 }
-            } catch (e) {
-                // игнорируем ошибки фоновой загрузки
-            }
+            } catch (e) {}
 
             // --- 3. Токен ---
             const savedToken = localStorage.getItem('githubToken');
