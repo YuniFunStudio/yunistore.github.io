@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>YuniStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <style id="main-style">
+    <style>
         :root {
             --bg-primary: #0d0d0d;
             --bg-secondary: #1a1a2e;
@@ -22,7 +22,6 @@
             --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             --font: 'Comic Neue', 'Chalkboard SE', 'Comic Sans MS', cursive, sans-serif;
             --particles-opacity: 0.03;
-            --animation-speed: 1s;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -499,6 +498,27 @@
         .drop-zone.dragover { border-color: var(--accent2); background: rgba(74, 158, 255, 0.05); }
         .drop-zone input[type="file"] { display: none; }
 
+        .github-save-area {
+            background: rgba(15, 52, 96, 0.3);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .github-save-area input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            margin-bottom: 8px;
+        }
+        .github-save-area input:focus { outline: none; border-color: var(--accent2); }
+        .github-status { font-size: 13px; color: var(--text-muted); margin-left: 10px; }
+
         .dither {
             width: 100%;
             height: 6px;
@@ -676,7 +696,7 @@
                     </div>
                     <div class="settings-item">
                         <label><span class="en">🌐 Language</span><span class="ru">🌐 Язык</span></label>
-                        <select id="langSelect" class="lang-select">
+                        <select id="langSelect">
                             <option value="en">🇬🇧 English</option>
                             <option value="ru">🇷🇺 Русский</option>
                         </select>
@@ -742,6 +762,7 @@
                 <div class="pixel-corner pixel-corner-bl"></div>
                 <div class="pixel-corner pixel-corner-br"></div>
                 <h2><span class="en">🔒 Admin Panel</span><span class="ru">🔒 Админ-панель</span></h2>
+
                 <div id="adminLogin" class="admin-login">
                     <p style="color:var(--text-muted);margin-bottom:12px;">
                         <span class="en">Enter password and code OR upload a .txt file with the code</span>
@@ -762,8 +783,28 @@
                         <span class="ru">Неверный пароль, код или содержимое файла!</span>
                     </div>
                 </div>
+
                 <div id="adminPanel" class="admin-panel">
-                    <!-- Загрузка кода через файл (для выполнения скриптов) -->
+                    <!-- ===== СОХРАНЕНИЕ НА GITHUB ===== -->
+                    <div class="github-save-area">
+                        <h3 style="color:var(--accent);font-size:18px;margin-bottom:10px;">💾 Save to GitHub</h3>
+                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">
+                            <span class="en">All visitors will see the data from GitHub. The file will be created automatically.</span>
+                            <span class="ru">Все посетители будут видеть данные с GitHub. Файл создастся автоматически.</span>
+                        </p>
+                        <input type="password" id="githubToken" placeholder="GitHub Token (ghp_...)" autocomplete="off">
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                            <button class="btn btn-small" id="saveToGitHubBtn">💾 <span class="en">Save to GitHub</span><span class="ru">Сохранить на GitHub</span></button>
+                            <span class="github-status" id="saveStatus"></span>
+                            <button class="btn btn-small" id="loadFromGitHubBtn" style="background:#1a3a6a;">📥 <span class="en">Reload from GitHub</span><span class="ru">Обновить с GitHub</span></button>
+                        </div>
+                        <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+                            <span class="en">Token needed only for saving. File: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
+                            <span class="ru">Токен нужен только для сохранения. Файл: <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:3px;">data.json</code></span>
+                        </div>
+                    </div>
+
+                    <!-- Загрузка скрипта -->
                     <div style="margin-bottom:20px;">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">📂 Load Script from File</span><span class="ru">📂 Загрузить скрипт из файла</span></h3>
                         <div class="drop-zone" id="dropZone">
@@ -771,15 +812,7 @@
                             <input type="file" id="fileInput" accept=".js,.txt">
                         </div>
                     </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px;">
-                        <button class="btn btn-small" id="exportDataBtn"><span class="en">📤 Export All Data</span><span class="ru">📤 Экспорт всех данных</span></button>
-                        <button class="btn btn-small" id="importDataBtn"><span class="en">📥 Import Data</span><span class="ru">📥 Импорт данных</span></button>
-                        <input type="file" id="importFileInput" accept=".json" style="display:none;">
-                    </div>
-                    <div style="background:rgba(255,255,0,0.1);border:1px solid #ffaa00;border-radius:6px;padding:10px;margin-bottom:16px;color:#ffaa00;font-size:13px;">
-                        <span class="en">⚠️ Data is stored locally in your browser. To share with others, export the data and share the JSON file.</span>
-                        <span class="ru">⚠️ Данные хранятся локально в вашем браузере. Чтобы поделиться с другими, экспортируйте данные и поделитесь JSON-файлом.</span>
-                    </div>
+
                     <!-- Новости -->
                     <div class="admin-form">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">➕ Add News</span><span class="ru">➕ Добавить новость</span></h3>
@@ -805,11 +838,13 @@
                         <input type="text" id="newsFile" placeholder="file.txt / game.zip">
                         <button class="btn" id="addNewsBtn"><span class="en">➕ Add News</span><span class="ru">➕ Добавить новость</span></button>
                     </div>
+
                     <div style="margin-top:20px;border-top:1px solid var(--border-color);padding-top:16px;">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">Manage News</span><span class="ru">Управление новостями</span></h3>
                         <button class="btn btn-small" id="clearNewsBtn" style="background:#ff6b6b;border-color:#ff6b6b;color:#0d0d0d;margin-bottom:12px;"><span class="en">🗑️ Clear All News</span><span class="ru">🗑️ Очистить все новости</span></button>
                         <div id="adminNewsList" class="admin-news-list"></div>
                     </div>
+
                     <!-- Игры -->
                     <div style="margin-top:20px;border-top:1px solid var(--border-color);padding-top:16px;">
                         <h3 style="color:var(--accent);font-size:18px;"><span class="en">🎮 Manage Games</span><span class="ru">🎮 Управление играми</span></h3>
@@ -856,8 +891,14 @@
 
     <script>
         // ============================================================
-        //  YUNISTORE — ПОЛНЫЙ СКРИПТ (ФИНАЛ)
+        //  YUNISTORE — ФИНАЛЬНАЯ ВЕРСИЯ С GITHUB
         // ============================================================
+
+        // ===== КОНСТАНТЫ =====
+        const REPO_OWNER = 'YuniFunStudio';
+        const REPO_NAME = 'yunistore.github.io';
+        const DATA_FILE = 'data.json';
+        const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`;
 
         // ===== ОПТИМИЗАЦИЯ =====
         function detectPerformance() {
@@ -871,21 +912,14 @@
             const particles = document.getElementById('particlesSelect').value;
             const animSpeed = parseFloat(document.getElementById('animSpeedSelect').value);
             const bgWrap = document.getElementById('bgWrap');
-            if (q === 'low') {
-                bgWrap.style.animationDuration = '60s';
-                document.querySelector('.bg-wrap::after').style.opacity = '0';
-            } else if (q === 'medium') {
-                bgWrap.style.animationDuration = '30s';
-                document.querySelector('.bg-wrap::after').style.opacity = '0.5';
-            } else {
-                bgWrap.style.animationDuration = '20s';
-                document.querySelector('.bg-wrap::after').style.opacity = '1';
-            }
-            if (particles === 'off') {
-                document.querySelector('.bg-wrap::after').style.opacity = '0';
-            } else {
-                document.querySelector('.bg-wrap::after').style.opacity = q === 'low' ? '0.3' : '1';
-            }
+            if (q === 'low') { bgWrap.style.animationDuration = '60s';
+                document.querySelector('.bg-wrap::after').style.opacity = '0'; } else if (q === 'medium') { bgWrap
+                    .style.animationDuration = '30s';
+                document.querySelector('.bg-wrap::after').style.opacity = '0.5'; } else { bgWrap.style.animationDuration =
+                    '20s';
+                document.querySelector('.bg-wrap::after').style.opacity = '1'; }
+            if (particles === 'off') { document.querySelector('.bg-wrap::after').style.opacity = '0'; } else { document
+                    .querySelector('.bg-wrap::after').style.opacity = q === 'low' ? '0.3' : '1'; }
             document.querySelectorAll('.tab-btn, .btn, .news-item, .game-item').forEach(el => {
                 el.style.transitionDuration = (0.3 * animSpeed) + 's';
             });
@@ -897,107 +931,49 @@
         function loadGraphicsSettings() {
             const saved = localStorage.getItem('yuniGraphics');
             if (saved) {
-                try {
-                    const data = JSON.parse(saved);
-                    document.getElementById('graphicsSelect').value = data.quality || 'auto';
-                    document.getElementById('particlesSelect').value = data.particles || 'on';
-                    document.getElementById('animSpeedSelect').value = data.animSpeed || '1';
-                } catch (e) {}
+                try { const d = JSON.parse(saved);
+                    document.getElementById('graphicsSelect').value = d.quality || 'auto';
+                    document.getElementById('particlesSelect').value = d.particles || 'on';
+                    document.getElementById('animSpeedSelect').value = d.animSpeed || '1'; } catch (e) {}
             }
             applyGraphics();
         }
 
         // ===== ТЕМЫ =====
         const themes = {
-            default: {
-                '--bg-primary': '#0d0d0d',
-                '--bg-secondary': '#1a1a2e',
-                '--bg-panel': 'rgba(22, 33, 62, 0.88)',
-                '--border-color': '#0f3460',
-                '--accent': '#4a9eff',
-                '--accent2': '#6c5ce7',
-                '--accent3': '#00d2d3',
-                '--text-primary': '#e0e0e0',
-                '--text-secondary': '#c8c8c8',
-                '--text-muted': '#888',
-                '--card-bg': 'rgba(15, 52, 96, 0.25)',
-                '--card-border': '#1a3a6a'
-            },
-            red: {
-                '--bg-primary': '#1a0a0a',
-                '--bg-secondary': '#2e1a1a',
-                '--bg-panel': 'rgba(62, 22, 22, 0.88)',
-                '--border-color': '#600f0f',
-                '--accent': '#ff4a4a',
-                '--accent2': '#e75c5c',
-                '--accent3': '#d30000',
-                '--text-primary': '#f0d0d0',
-                '--text-secondary': '#d0b0b0',
-                '--text-muted': '#a07070',
-                '--card-bg': 'rgba(96, 15, 15, 0.25)',
-                '--card-border': '#6a1a1a'
-            },
-            green: {
-                '--bg-primary': '#0a1a0a',
-                '--bg-secondary': '#1a2e1a',
-                '--bg-panel': 'rgba(22, 62, 22, 0.88)',
-                '--border-color': '#0f600f',
-                '--accent': '#4aff4a',
-                '--accent2': '#5ce75c',
-                '--accent3': '#00d300',
-                '--text-primary': '#d0f0d0',
-                '--text-secondary': '#b0d0b0',
-                '--text-muted': '#70a070',
-                '--card-bg': 'rgba(15, 96, 15, 0.25)',
-                '--card-border': '#1a6a1a'
-            },
-            purple: {
-                '--bg-primary': '#0d0a1a',
-                '--bg-secondary': '#1e1a2e',
-                '--bg-panel': 'rgba(33, 22, 62, 0.88)',
-                '--border-color': '#2f0f60',
-                '--accent': '#b04aff',
-                '--accent2': '#8c5ce7',
-                '--accent3': '#6a00d3',
-                '--text-primary': '#e0d0f0',
-                '--text-secondary': '#c8b0d0',
-                '--text-muted': '#8870a0',
-                '--card-bg': 'rgba(47, 15, 96, 0.25)',
-                '--card-border': '#3a1a6a'
-            },
-            orange: {
-                '--bg-primary': '#1a120a',
-                '--bg-secondary': '#2e221a',
-                '--bg-panel': 'rgba(62, 42, 22, 0.88)',
-                '--border-color': '#60300f',
-                '--accent': '#ff8c4a',
-                '--accent2': '#e77c5c',
-                '--accent3': '#d35a00',
-                '--text-primary': '#f0e0d0',
-                '--text-secondary': '#d0c0b0',
-                '--text-muted': '#a09070',
-                '--card-bg': 'rgba(96, 48, 15, 0.25)',
-                '--card-border': '#6a3a1a'
-            }
+            default: { '--bg-primary': '#0d0d0d', '--bg-secondary': '#1a1a2e', '--bg-panel': 'rgba(22,33,62,0.88)',
+                    '--border-color': '#0f3460', '--accent': '#4a9eff', '--accent2': '#6c5ce7', '--accent3': '#00d2d3',
+                    '--text-primary': '#e0e0e0', '--text-secondary': '#c8c8c8', '--text-muted': '#888',
+                    '--card-bg': 'rgba(15,52,96,0.25)', '--card-border': '#1a3a6a' },
+            red: { '--bg-primary': '#1a0a0a', '--bg-secondary': '#2e1a1a', '--bg-panel': 'rgba(62,22,22,0.88)',
+                    '--border-color': '#600f0f', '--accent': '#ff4a4a', '--accent2': '#e75c5c', '--accent3': '#d30000',
+                    '--text-primary': '#f0d0d0', '--text-secondary': '#d0b0b0', '--text-muted': '#a07070',
+                    '--card-bg': 'rgba(96,15,15,0.25)', '--card-border': '#6a1a1a' },
+            green: { '--bg-primary': '#0a1a0a', '--bg-secondary': '#1a2e1a', '--bg-panel': 'rgba(22,62,22,0.88)',
+                    '--border-color': '#0f600f', '--accent': '#4aff4a', '--accent2': '#5ce75c', '--accent3': '#00d300',
+                    '--text-primary': '#d0f0d0', '--text-secondary': '#b0d0b0', '--text-muted': '#70a070',
+                    '--card-bg': 'rgba(15,96,15,0.25)', '--card-border': '#1a6a1a' },
+            purple: { '--bg-primary': '#0d0a1a', '--bg-secondary': '#1e1a2e', '--bg-panel': 'rgba(33,22,62,0.88)',
+                    '--border-color': '#2f0f60', '--accent': '#b04aff', '--accent2': '#8c5ce7', '--accent3': '#6a00d3',
+                    '--text-primary': '#e0d0f0', '--text-secondary': '#c8b0d0', '--text-muted': '#8870a0',
+                    '--card-bg': 'rgba(47,15,96,0.25)', '--card-border': '#3a1a6a' },
+            orange: { '--bg-primary': '#1a120a', '--bg-secondary': '#2e221a', '--bg-panel': 'rgba(62,42,22,0.88)',
+                    '--border-color': '#60300f', '--accent': '#ff8c4a', '--accent2': '#e77c5c', '--accent3': '#d35a00',
+                    '--text-primary': '#f0e0d0', '--text-secondary': '#d0c0b0', '--text-muted': '#a09070',
+                    '--card-bg': 'rgba(96,48,15,0.25)', '--card-border': '#6a3a1a' }
         };
 
         function applyTheme(name) {
             const t = themes[name] || themes.default;
             const root = document.documentElement;
-            for (const [key, val] of Object.entries(t)) {
-                root.style.setProperty(key, val);
-            }
+            for (const [k, v] of Object.entries(t)) { root.style.setProperty(k, v); }
             localStorage.setItem('yuniTheme', name);
         }
 
         function loadTheme() {
             const saved = localStorage.getItem('yuniTheme');
-            if (saved && themes[saved]) {
-                document.getElementById('themeSelect').value = saved;
-                applyTheme(saved);
-            } else {
-                applyTheme('default');
-            }
+            if (saved && themes[saved]) { document.getElementById('themeSelect').value = saved;
+                applyTheme(saved); } else { applyTheme('default'); }
         }
 
         // ===== ОБЩЕЕ =====
@@ -1018,9 +994,7 @@
             volumeSlider.value = savedVol;
             music.volume = savedVol / 100;
             volumeValue.textContent = savedVol + '%';
-        } else {
-            music.volume = 0.3;
-        }
+        } else { music.volume = 0.3; }
         volumeSlider.addEventListener('input', function() {
             const val = this.value;
             music.volume = val / 100;
@@ -1035,18 +1009,12 @@
             langSelect.value = savedLang;
             if (savedLang === 'ru') document.body.classList.add('lang-ru');
             else document.body.classList.add('lang-en');
-        } else {
-            document.body.classList.add('lang-en');
-        }
+        } else { document.body.classList.add('lang-en'); }
         langSelect.addEventListener('change', function() {
             const lang = this.value;
-            if (lang === 'ru') {
-                document.body.classList.remove('lang-en');
-                document.body.classList.add('lang-ru');
-            } else {
-                document.body.classList.remove('lang-ru');
-                document.body.classList.add('lang-en');
-            }
+            if (lang === 'ru') { document.body.classList.remove('lang-en');
+                document.body.classList.add('lang-ru'); } else { document.body.classList.remove('lang-ru');
+                document.body.classList.add('lang-en'); }
             localStorage.setItem('yuniLang', lang);
         });
 
@@ -1063,7 +1031,7 @@
             });
         });
 
-        // ===== НОВОСТИ =====
+        // ===== НОВОСТИ (LOCAL STORAGE) =====
         function loadNews() { return JSON.parse(localStorage.getItem('yuniNews') || '[]'); }
 
         function saveNews(data) { localStorage.setItem('yuniNews', JSON.stringify(data)); }
@@ -1081,7 +1049,7 @@
                 const item = data[i];
                 const tags = item.tags || [];
                 let tagHtml = tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` :
-                '';
+                    '';
                 let contentHtml = '';
                 if (tags.includes('video') && item.video) contentHtml +=
                     `<div class="video-wrapper"><iframe src="${item.video}" allowfullscreen></iframe></div>`;
@@ -1140,7 +1108,6 @@
             });
         }
 
-        // ===== ДОБАВЛЕНИЕ НОВОСТИ =====
         document.getElementById('addNewsBtn').addEventListener('click', function() {
             const title = document.getElementById('newsTitle').value.trim();
             const text = document.getElementById('newsText').value.trim();
@@ -1280,14 +1247,10 @@
             renderAdminGames();
         });
 
-        // ===== АДМИН-ЛОГИН (с загрузкой файла) =====
+        // ===== АДМИН-ЛОГИН =====
         const adminLoginDiv = document.getElementById('adminLogin');
         const adminPanelDiv = document.getElementById('adminPanel');
         const adminErrorDiv = document.getElementById('adminError');
-
-        function checkAdminCredentials(password, code) {
-            return password === '99' && code === 'LiveCoockesBaldi99';
-        }
 
         function grantAccess() {
             adminLoginDiv.style.display = 'none';
@@ -1300,7 +1263,7 @@
         document.getElementById('adminLoginBtn').addEventListener('click', function() {
             const pass = document.getElementById('adminPassword').value;
             const code = document.getElementById('adminCode').value;
-            if (checkAdminCredentials(pass, code)) {
+            if (pass === '99' && code === 'LiveCoockesBaldi99') {
                 grantAccess();
             } else {
                 adminErrorDiv.style.display = 'block';
@@ -1308,10 +1271,8 @@
             }
         });
 
-        // Загрузка файла с кодом для входа
         const adminDropZone = document.getElementById('adminDropZone');
         const adminFileInput = document.getElementById('adminFileInput');
-
         adminDropZone.addEventListener('click', () => adminFileInput.click());
         adminDropZone.addEventListener('dragover', (e) => { e.preventDefault();
             adminDropZone.classList.add('dragover'); });
@@ -1341,10 +1302,9 @@
             reader.readAsText(file);
         }
 
-        // ===== ЗАГРУЗКА СКРИПТА ЧЕРЕЗ ФАЙЛ =====
+        // ===== ЗАГРУЗКА СКРИПТА =====
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
-
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => { e.preventDefault();
             dropZone.classList.add('dragover'); });
@@ -1367,69 +1327,124 @@
                     const script = document.createElement('script');
                     script.textContent = code;
                     document.head.appendChild(script);
-                    showToast('Script loaded and executed!');
-                } catch (err) {
-                    showToast('Error: ' + err.message);
-                }
+                    showToast('Script loaded!');
+                } catch (err) { showToast('Error: ' + err.message); }
             };
             reader.readAsText(file);
         }
 
-        // ===== ЭКСПОРТ/ИМПОРТ =====
-        document.getElementById('exportDataBtn').addEventListener('click', function() {
-            const data = {
-                news: loadNews(),
-                games: loadGames(),
-                settings: {
-                    volume: localStorage.getItem('yuniVolume'),
-                    lang: localStorage.getItem('yuniLang'),
-                    theme: localStorage.getItem('yuniTheme'),
-                    graphics: localStorage.getItem('yuniGraphics')
+        // ===== GITHUB: ЗАГРУЗКА ДАННЫХ =====
+        async function loadDataFromGitHub() {
+            try {
+                const response = await fetch(GITHUB_API);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.warn('data.json not found, will be created on first save.');
+                        return null;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
                 }
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'yunistore_data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Data exported!');
+                const data = await response.json();
+                const content = atob(data.content);
+                return JSON.parse(content);
+            } catch (e) {
+                console.warn('Failed to load data.json:', e);
+                return null;
+            }
+        }
+
+        async function saveDataToGitHub(data) {
+            const token = document.getElementById('githubToken').value.trim();
+            if (!token) {
+                showToast('Enter GitHub token!');
+                return;
+            }
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.textContent = '⏳ Saving...';
+            statusEl.style.color = 'var(--text-muted)';
+
+            try {
+                // Сначала пытаемся получить информацию о файле (для SHA)
+                let sha = null;
+                let getResponse = await fetch(GITHUB_API, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                } else if (getResponse.status !== 404) {
+                    throw new Error('Failed to get file info: ' + getResponse.status);
+                }
+
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+                const payload = {
+                    message: 'Update data from YuniStore',
+                    content: content,
+                    branch: 'main'
+                };
+                if (sha) payload.sha = sha;
+
+                const putResponse = await fetch(GITHUB_API, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!putResponse.ok) {
+                    const err = await putResponse.json();
+                    throw new Error(err.message || 'Unknown error');
+                }
+
+                statusEl.textContent = '✅ Saved!';
+                statusEl.style.color = '#4CFF00';
+                showToast('Data saved to GitHub!');
+                // Обновляем локальные данные
+                localStorage.setItem('yuniNews', JSON.stringify(data.news || []));
+                localStorage.setItem('yuniGames', JSON.stringify(data.games || []));
+                renderNews();
+                renderGames();
+            } catch (e) {
+                statusEl.textContent = '❌ Error: ' + e.message;
+                statusEl.style.color = '#ff6b6b';
+                showToast('Save error: ' + e.message);
+            }
+        }
+
+        // ===== КНОПКИ GITHUB =====
+        document.getElementById('saveToGitHubBtn').addEventListener('click', function() {
+            const news = loadNews();
+            const games = loadGames();
+            const data = { news, games };
+            saveDataToGitHub(data);
         });
 
-        document.getElementById('importDataBtn').addEventListener('click', function() {
-            document.getElementById('importFileInput').click();
-        });
-        document.getElementById('importFileInput').addEventListener('change', function() {
-            if (!this.files.length) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.news) saveNews(data.news);
-                    if (data.games) saveGames(data.games);
-                    if (data.settings) {
-                        if (data.settings.volume) localStorage.setItem('yuniVolume', data.settings.volume);
-                        if (data.settings.lang) localStorage.setItem('yuniLang', data.settings.lang);
-                        if (data.settings.theme) localStorage.setItem('yuniTheme', data.settings.theme);
-                        if (data.settings.graphics) localStorage.setItem('yuniGraphics', data.settings.graphics);
-                    }
-                    renderNews();
-                    renderGames();
-                    loadTheme();
-                    loadGraphicsSettings();
-                    showToast('Data imported!');
-                } catch (err) {
-                    showToast('Import error: ' + err.message);
-                }
-            };
-            reader.readAsText(this.files[0]);
-            this.value = '';
+        document.getElementById('loadFromGitHubBtn').addEventListener('click', async function() {
+            const statusEl = document.getElementById('saveStatus');
+            statusEl.textContent = '⏳ Loading...';
+            statusEl.style.color = 'var(--text-muted)';
+            const remoteData = await loadDataFromGitHub();
+            if (remoteData) {
+                if (remoteData.news) saveNews(remoteData.news);
+                if (remoteData.games) saveGames(remoteData.games);
+                renderNews();
+                renderGames();
+                statusEl.textContent = '✅ Loaded!';
+                statusEl.style.color = '#4CFF00';
+                showToast('Data loaded from GitHub!');
+            } else {
+                statusEl.textContent = '❌ No data on GitHub';
+                statusEl.style.color = '#ff6b6b';
+                showToast('No data.json found on GitHub');
+            }
         });
 
         // ===== СКАЧИВАНИЕ ТЕСТОВЫХ ФАЙЛОВ =====
         function downloadTestFile(filename) {
-            const words = ['Hello', 'World', 'YuniStore', 'Baldi', 'Universe', 'Yunin', 'Game', 'Mod', 'Developer', 'Creative',
+            const words = ['Hello', 'World', 'YuniStore', 'Baldi', 'Universe', 'Yunin', 'Game', 'Mod', 'Developer',
+                'Creative',
                 'Pixel', 'Retro', 'School', 'Horror', 'Mystery', 'Adventure', 'Fun', 'Cool', 'Amazing', 'Awesome',
                 'Great', 'Wonderful', 'Fantastic', 'Super', 'Mega', 'Ultra', 'Epic', 'Legendary', 'Masterpiece'
             ];
@@ -1461,70 +1476,90 @@
         });
 
         // ===== ИНИЦИАЛИЗАЦИЯ =====
-        function init() {
+        async function init() {
             loadTheme();
             loadGraphicsSettings();
 
-            document.getElementById('themeSelect').addEventListener('change', function() {
-                applyTheme(this.value);
-            });
+            document.getElementById('themeSelect').addEventListener('change', function() { applyTheme(this.value); });
             document.getElementById('graphicsSelect').addEventListener('change', applyGraphics);
             document.getElementById('particlesSelect').addEventListener('change', applyGraphics);
             document.getElementById('animSpeedSelect').addEventListener('change', applyGraphics);
 
-            // Стартовые данные
-            if (!loadNews().length) {
-                const defaultNews = [{
-                    title: 'YuniStore is live! / YuniStore запущен!',
-                    text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
-                    tags: ['news', 'video'],
-                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                    photo: '',
-                    file: '',
-                    date: '22 августа 2026'
-                }, {
-                    title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
-                    text: 'Check out the new trailer! / Посмотри новый трейлер!',
-                    tags: ['video', 'update'],
-                    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                    photo: '',
-                    file: '',
-                    date: '20 августа 2026'
-                }, {
-                    title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
-                    text: 'Download the latest version. / Скачай последнюю версию.',
-                    tags: ['file', 'update'],
-                    video: '',
-                    photo: '',
-                    file: 'yunin-school-legacy-v2.1.zip',
-                    date: '15 августа 2026'
-                }];
-                saveNews(defaultNews);
-            }
-            if (!loadGames().length) {
-                const defaultGames = [{
-                    title: 'Universe Yunin',
-                    desc: 'New universe, new hero, mysterious school.',
-                    version: 'v0.5',
-                    icon: './images/universe-icon.png',
-                    status: 'wip',
-                    link: ''
-                }, {
-                    title: 'Yunin School Legacy',
-                    desc: 'Classic Baldi\'s Basics style game.',
-                    version: 'v2.1',
-                    icon: './images/legacy-icon.png',
-                    status: 'released',
-                    link: ''
-                }];
-                saveGames(defaultGames);
+            // Загружаем данные с GitHub
+            const remoteData = await loadDataFromGitHub();
+            if (remoteData) {
+                if (remoteData.news) saveNews(remoteData.news);
+                if (remoteData.games) saveGames(remoteData.games);
+                showToast('Data loaded from GitHub!');
+            } else {
+                // Стартовые данные, если ничего нет
+                if (!loadNews().length) {
+                    const defaultNews = [{
+                        title: 'YuniStore is live! / YuniStore запущен!',
+                        text: 'Welcome to my new game store! / Добро пожаловать в мой новый игровой магазин!',
+                        tags: ['news', 'video'],
+                        video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                        photo: '',
+                        file: '',
+                        date: '22 августа 2026'
+                    }, {
+                        title: 'Universe Yunin — new trailer! / Universe Yunin — новый трейлер!',
+                        text: 'Check out the new trailer! / Посмотри новый трейлер!',
+                        tags: ['video', 'update'],
+                        video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                        photo: '',
+                        file: '',
+                        date: '20 августа 2026'
+                    }, {
+                        title: 'Yunin School Legacy update / Обновление Yunin School Legacy',
+                        text: 'Download the latest version. / Скачай последнюю версию.',
+                        tags: ['file', 'update'],
+                        video: '',
+                        photo: '',
+                        file: 'yunin-school-legacy-v2.1.zip',
+                        date: '15 августа 2026'
+                    }];
+                    saveNews(defaultNews);
+                }
+                if (!loadGames().length) {
+                    const defaultGames = [{
+                        title: 'Universe Yunin',
+                        desc: 'New universe, new hero, mysterious school.',
+                        version: 'v0.5',
+                        icon: './images/universe-icon.png',
+                        status: 'wip',
+                        link: ''
+                    }, {
+                        title: 'Yunin School Legacy',
+                        desc: 'Classic Baldi\'s Basics style game.',
+                        version: 'v2.1',
+                        icon: './images/legacy-icon.png',
+                        status: 'released',
+                        link: ''
+                    }];
+                    saveGames(defaultGames);
+                }
             }
 
             renderNews();
             renderGames();
+
+            // Если есть токен в localStorage, подставляем его
+            const savedToken = localStorage.getItem('githubToken');
+            if (savedToken) {
+                document.getElementById('githubToken').value = savedToken;
+            }
+
+            // Сохраняем токен при вводе
+            document.getElementById('githubToken').addEventListener('change', function() {
+                if (this.value.trim()) {
+                    localStorage.setItem('githubToken', this.value.trim());
+                }
+            });
+
             console.log('YuniStore loaded!');
             console.log('Password: 99, Code: LiveCoockesBaldi99');
-            console.log('You can also upload a .txt file with the code to login.');
+            console.log('GitHub file: data.json will be created automatically on first save.');
         }
 
         init();
